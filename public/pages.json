@@ -1,34 +1,34 @@
 {
   "categories": {
-    "culture": {
-      "name": "文化 Culture",
-      "icon": "🎨",
-      "articles": [
-        {
-          "title": "信息图：china 这事儿都怪乾隆",
-          "url": "culture/2025-06-28-china.html",
-          "date": "2025-06-28"
-        },
-        {
-          "title": "正文：china 这事儿都怪乾隆",
-          "url": "culture/2025-06-28-china-learn.html",
-          "date": "2025-06-28"
-        }
-      ]
-    },
     "history": {
       "name": "历史 History",
       "icon": "📚",
       "articles": [
         {
-          "title": "信息图：茅庐定策 - 三顾茅庐的历史与影响",
-          "url": "history/2025-07-03-sangumaolu.html",
-          "date": "2025-07-03"
-        },
-        {
           "title": "交互式应用：茅庐定策 - 三顾茅庐的历史与影响",
           "url": "history/2025-07-03-sangumaolu-app.html",
           "date": "2025-07-03"
+        },
+        {
+          "title": "信息图：茅庐定策 - 三顾茅庐的历史与影响",
+          "url": "history/2025-07-03-sangumaolu.html",
+          "date": "2025-07-03"
+        }
+      ]
+    },
+    "culture": {
+      "name": "文化 Culture",
+      "icon": "🎨",
+      "articles": [
+        {
+          "title": "正文：china 这事儿都怪乾隆",
+          "url": "culture/2025-06-28-china-learn.html",
+          "date": "2025-06-28"
+        },
+        {
+          "title": "信息图：china 这事儿都怪乾隆",
+          "url": "culture/2025-06-28-china.html",
+          "date": "2025-06-28"
         }
       ]
     }
