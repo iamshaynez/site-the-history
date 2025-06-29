@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景阳冈上的虎啸：武松打虎数据可视化报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flowchart-step {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flowchart-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #FC913A;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #FF4E50, #FC913A);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">景阳冈上的那声虎啸</h1>
+            <p class="text-xl text-gray-600 mt-2">一个英雄传说的可视化分析</p>
+        </header>
+
+        <main class="space-y-12">
+
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-1 bg-white rounded-xl shadow-lg p-6 text-center stat-card text-white">
+                    <h2 class="text-2xl font-bold mb-2">文化烙印</h2>
+                    <p class="text-7xl font-extrabold">600+</p>
+                    <p class="text-2xl mt-2">年的不朽传奇</p>
+                    <p class="mt-4 text-yellow-200">从明代小说到当代语境，“武松打虎”已成为一个超越文本的强大文化符号，持续影响着中国人的集体记忆。</p>
+                </div>
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-center">时代背景：崩坏的北宋末年</h3>
+                    <p class="text-center text-gray-600 mb-6">《水浒传》的故事设定于一个“官逼民反”的时代。以高俅、蔡京为首的权臣当道，朝政腐败，民不聊生。这种黑暗的社会现实，是理解武松等英雄人物行为逻辑的钥匙，当体制无法带来正义，体制外的暴力便获得了某种天然的合法性。</p>
+                    <div class="chart-container">
+                        <canvas id="corruptionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold mb-6 text-center">风暴前夕：景阳冈之路</h3>
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">从步入“三碗不过岗”的酒家，到最终赤手空拳面对猛虎，武松的每一步选择都充满了戏剧张力，将他从一个鲁莽的过客，推向了命中注定的英雄试炼场。</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0">
+                    <div class="text-center p-4 rounded-lg bg-gray-50 flowchart-step w-full md:w-auto">
+                        <p class="text-4xl">①</p>
+                        <h4 class="font-bold text-lg mt-2">豪饮十八碗</h4>
+                        <p class="text-sm text-gray-500">不听店家劝阻，<br>尽显豪杰本色。</p>
+                    </div>
+                    <div class="flowchart-arrow transform md:rotate-0 rotate-90">→</div>
+                    <div class="text-center p-4 rounded-lg bg-gray-50 flowchart-step w-full md:w-auto">
+                        <p class="text-4xl">②</p>
+                        <h4 class="font-bold text-lg mt-2">执意上冈</h4>
+                        <p class="text-sm text-gray-500">将警告视为噱头，<br>醉意中独自前行。</p>
+                    </div>
+                    <div class="flowchart-arrow transform md:rotate-0 rotate-90">→</div>
+                    <div class="text-center p-4 rounded-lg bg-gray-50 flowchart-step w-full md:w-auto">
+                        <p class="text-4xl">③</p>
+                        <h4 class="font-bold text-lg mt-2">见榜文方知有虎</h4>
+                        <p class="text-sm text-gray-500">酒醒大半，心生悔意，<br>但为“好汉”名声不退。</p>
+                    </div>
+                     <div class="flowchart-arrow transform md:rotate-0 rotate-90">→</div>
+                    <div class="text-center p-4 rounded-lg bg-gray-50 flowchart-step w-full md:w-auto">
+                        <p class="text-4xl">④</p>
+                        <h4 class="font-bold text-lg mt-2">哨棒断裂</h4>
+                        <p class="text-sm text-gray-500">唯一的武器失效，<br>搏斗进入白热化。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-3 bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-center">巅峰对决：虎啸风生</h3>
+                    <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">小说对搏斗的描写堪称古典文学的典范。老虎赖以捕食的“三板斧”——扑、掀、剪，与武松电光石火般的闪避和反击，构成了一场惊心动魄的生死之战。</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                        <div class="border-2 border-dashed border-amber-400 rounded-lg p-6">
+                            <p class="text-6xl mb-4">🐅</p>
+                            <h4 class="text-xl font-bold text-red-600">第一式：一扑</h4>
+                            <p class="text-gray-600 mt-2">猛虎从乱树丛中跃出，势不可挡。武松瞬间闪过，酒已化作冷汗。</p>
+                        </div>
+                        <div class="border-2 border-dashed border-amber-400 rounded-lg p-6">
+                            <p class="text-6xl mb-4">🐅</p>
+                            <h4 class="text-xl font-bold text-red-600">第二式：一掀</h4>
+                            <p class="text-gray-600 mt-2">虎尾如钢鞭般横扫，武松再次惊险躲开，格斗本能被完全唤醒。</p>
+                        </div>
+                        <div class="border-2 border-dashed border-amber-400 rounded-lg p-6">
+                            <p class="text-6xl mb-4">👊</p>
+                            <h4 class="text-xl font-bold text-green-600">最终回合：赤手空拳</h4>
+                            <p class="text-gray-600 mt-2">哨棒断裂后，武松放弃所有依仗，用铁拳硬生生将猛虎击毙，完成了意志对野性的终极胜利。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-center">荣耀与代价：英雄的命运</h3>
+                     <p class="text-center text-gray-600 mb-6">打虎为武松赢得了“都头”的职位和英雄的声望，但也正是这份荣耀，将他卷入了兄长被杀的家庭悲剧，最终从为民除害的英雄，走向了血溅鸳鸯楼的复仇者。</p>
+                    <div class="chart-container">
+                        <canvas id="fateChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-center">英雄对比：武松 VS 李逵</h3>
+                    <p class="text-center text-gray-600 mb-6">《水浒传》中另一位好汉李逵也曾杀虎，但二者性质迥异。武松打虎是维护公共安全的义举，而李逵杀虎更多是因个人过失引发的悲愤复仇，这决定了两个故事在读者心中不同的分量。</p>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold mb-4 text-center">符号的流变：一个故事的百年旅程</h3>
+                <p class="text-center text-gray-600 mb-6">“武松打虎”早已超越文学范畴，成为一个多义的文化符号。在不同时代，它被不断重塑，从革命斗争的政治隐喻，到当代反腐行动的代名词，其生命力历久弥新。</p>
+                 <div class="chart-container h-96 max-h-[450px]">
+                    <canvas id="legacyChart"></canvas>
+                </div>
+            </section>
+            
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+            <p class="text-gray-500">&copy; 2025 数据可视化报告. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-1">基于《水浒传》文本分析生成。</p>
+        </footer>
+    </div>
+
+    <script>
+        const vibrantPalette = {
+            red: '#FF4E50',
+            orange: '#FC913A',
+            yellow: '#F9D423',
+            lightGreen: '#EDE574',
+            darkerGreen: '#92C57A'
+        };
+
+        function wrapText(text, maxLength) {
+            if (typeof text !== 'string' || text.length <= maxLength) {
+                return text;
+            }
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxLength && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: "'Noto Sans SC', sans-serif",
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    titleFont: {
+                        family: "'Noto Sans SC', sans-serif",
+                    },
+                    bodyFont: {
+                        family: "'Noto Sans SC', sans-serif",
+                    }
+                }
+            }
+        };
+
+        const charts = [];
+
+        charts.push(new Chart(document.getElementById('corruptionChart'), {
+            type: 'bar',
+            data: {
+                labels: ['高俅 (太尉)', '蔡京 (太师)', ['普通百姓', ' (被压迫者)']],
+                datasets: [{
+                    label: '腐败与权势指数 (虚构)',
+                    data: [95, 92, 10],
+                    backgroundColor: [vibrantPalette.red, vibrantPalette.orange, vibrantPalette.lightGreen],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: { ...defaultChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '指数'
+                        }
+                    }
+                }
+            }
+        }));
+        
+        charts.push(new Chart(document.getElementById('fateChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['英雄声望', '悲剧伏笔', '官府身份'],
+                datasets: [{
+                    label: '打虎后的命运构成',
+                    data: [50, 40, 10],
+                    backgroundColor: [vibrantPalette.yellow, vibrantPalette.red, vibrantPalette.darkerGreen],
+                    hoverOffset: 4
+                }]
+            },
+            options: defaultChartOptions
+        }));
+
+        charts.push(new Chart(document.getElementById('comparisonChart'), {
+            type: 'radar',
+            data: {
+                labels: ['公共利益', '个人动机', ['英雄', '荣耀感'], '社会影响', '道义正当性'],
+                datasets: [
+                    {
+                        label: '武松打虎',
+                        data: [9, 6, 9, 8, 10],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 78, 80, 0.2)',
+                        borderColor: vibrantPalette.red,
+                        pointBackgroundColor: vibrantPalette.red,
+                    }, {
+                        label: '李逵杀虎',
+                        data: [4, 9, 3, 5, 5],
+                        fill: true,
+                        backgroundColor: 'rgba(252, 145, 58, 0.2)',
+                        borderColor: vibrantPalette.orange,
+                        pointBackgroundColor: vibrantPalette.orange,
+                    }
+                ]
+            },
+            options: { ...defaultChartOptions,
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: '#e2e8f0'
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 14,
+                                family: "'Noto Sans SC', sans-serif"
+                            },
+                             callback: function(label) {
+                                return wrapText(label, 8); 
+                            }
+                        },
+                        ticks: {
+                            backdropColor: 'transparent',
+                            color: '#4b5563',
+                            stepSize: 2
+                        },
+                        min: 0,
+                        max: 10
+                    }
+                }
+            }
+        }));
+
+        charts.push(new Chart(document.getElementById('legacyChart'), {
+            type: 'line',
+            data: {
+                labels: ['明代 (小说定型)', '清代 (禁毁与流传)', ['民国时期', '(新文化运动)'], ['共和国早期', '(政治寓言化)'], ['90年代', '(电视剧热播)'], ['当代', '(反腐代名词)']],
+                datasets: [{
+                    label: '文化影响力曲线',
+                    data: [60, 50, 70, 95, 85, 90],
+                    fill: true,
+                    borderColor: vibrantPalette.red,
+                    backgroundColor: 'rgba(255, 78, 80, 0.1)',
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: vibrantPalette.red
+                }]
+            },
+            options: { ...defaultChartOptions,
+                 scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '影响力指数'
+                        }
+                    }
+                }
+            }
+        }));
+
+        charts.forEach(chart => {
+            const chartLabels = chart.config.data.labels;
+            chart.config.data.labels = chartLabels.map(label => {
+                if(Array.isArray(label)) return label;
+                return wrapText(label, 16);
+            });
+            chart.update();
+        });
+
+    </script>
+</body>
+</html>

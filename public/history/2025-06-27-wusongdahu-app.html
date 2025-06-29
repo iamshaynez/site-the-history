@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式报告：景阳冈上的虎啸</title>
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: A vertical-scrolling narrative SPA. Sections flow from historical context -> prelude -> climax -> analysis -> legacy. This structure guides the user through the story logically, mirroring the source report's analytical flow but presenting it in a more engaging, visual format. Key interactions include chart tooltips and hover effects on diagrams. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Corrupt Northern Song era. Goal: Compare. Viz: Bar Chart (Chart.js) to show power imbalance. Justification: Clear visual comparison.
+        - Report Info: Events leading to the fight. Goal: Organize. Viz: HTML/CSS Flowchart. Justification: Shows linear progression without SVG/Mermaid.
+        - Report Info: Wu Song's fate. Goal: Inform/Composition. Viz: Donut Chart (Chart.js). Justification: Shows conflicting elements of his new life.
+        - Report Info: Wu Song vs. Li Kui. Goal: Compare. Viz: Radar Chart (Chart.js). Justification: Excellent for multi-variable comparison.
+        - Report Info: Cultural legacy over time. Goal: Change. Viz: Line Chart (Chart.js). Justification: Ideal for showing a trend over a timeline.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #F5F5F5;
+            --bg-card: #FFFFFF;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-primary: #D35400; /* Terracotta/Rust */
+            --accent-secondary: #BDC3C7; /* Muted Gray */
+        }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .interactive-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .section-intro {
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        .highlight {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .flow-step {
+            border: 2px solid var(--accent-secondary);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            background-color: #FAFAFA;
+        }
+        .flow-arrow {
+            color: var(--accent-secondary);
+            font-size: 2.5rem;
+            align-self: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-16">
+
+        <header class="text-center mb-16 md:mb-24">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">景阳冈上的那声虎啸</h1>
+            <p class="text-lg md:text-xl text-gray-600">一个民族英雄想象的交互式探索</p>
+        </header>
+
+        <main class="space-y-16 md:space-y-24">
+
+            <section id="context">
+                <h2 class="section-title">第一章：乱世之源，英雄之始</h2>
+                <p class="section-intro">英雄并非凭空诞生，他们是时代的产物。本章将探索《水浒传》设定的北宋末年，一个“官逼民反”的黑暗时代。下方的图表直观地展示了当时腐朽的社会结构，这种巨大的权力失衡是理解武松等梁山好汉行为逻辑的钥匙。</p>
+                <div class="interactive-card">
+                    <h3 class="text-xl font-bold text-center mb-4">北宋末年社会权力结构示意图</h3>
+                    <div class="chart-container">
+                        <canvas id="contextChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="journey">
+                <h2 class="section-title">第二章：景阳冈上的生死对决</h2>
+                <p class="section-intro">从步入“三碗不过岗”的酒家，到最终赤手空拳面对猛虎，武松的每一步选择都充满了戏剧张力。这个流程图将为您呈现那段惊心动魄的旅程中几个关键的转折点，正是这些选择，将他从一个鲁莽的过客，推向了命中注定的英雄试炼场。</p>
+                <div class="interactive-card">
+                    <div class="grid grid-cols-1 md:grid-cols-7 items-center gap-4">
+                        <div class="flow-step md:col-span-2">
+                            <p class="text-2xl font-bold highlight">① 豪饮十八碗</p>
+                            <p class="text-sm text-gray-500 mt-2">无视店家劝阻，尽显豪杰本色与不受约束的脾性。</p>
+                        </div>
+                        <div class="flow-arrow text-center transform md:rotate-0 rotate-90">→</div>
+                        <div class="flow-step md:col-span-2">
+                             <p class="text-2xl font-bold highlight">② 见榜文知虎</p>
+                            <p class="text-sm text-gray-500 mt-2">酒醒大半，心生恐惧，但为“好汉”名声，决不后退。</p>
+                        </div>
+                        <div class="flow-arrow text-center transform md:rotate-0 rotate-90">→</div>
+                        <div class="flow-step md:col-span-2">
+                            <p class="text-2xl font-bold highlight">③ 哨棒断裂</p>
+                            <p class="text-sm text-gray-500 mt-2">唯一武器失效，搏斗升级为最原始的血肉拼杀，英雄本色尽显。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="aftermath">
+                <h2 class="section-title">第三章：虎死之后</h2>
+                <p class="section-intro">景阳冈的虎啸平息了，但武松人生的风暴才刚刚开始。打虎为他带来了荣耀，也为他埋下了悲剧的种子。通过以下两张图表，我们可以分析英雄的荣耀与代价，并将他的义举与梁山另一位“杀虎者”李逵进行对比，以揭示其行为的独特性。</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold text-center mb-4">打虎后的命运构成</h3>
+                        <div class="chart-container">
+                            <canvas id="fateChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold text-center mb-4">义举对比：武松 VS 李逵</h3>
+                        <div class="chart-container">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="legacy">
+                <h2 class="section-title">第四章：一个符号的百年流变</h2>
+                <p class="section-intro">“武松打虎”早已超越文学范畴，成为一个多义的文化符号。在不同时代，它被不断重塑，从革命斗争的政治隐喻，到当代反腐行动的代名词。下方的曲线图描绘了这一文化符号在历史长河中的影响力变迁，见证了其不朽的生命力。</p>
+                <div class="interactive-card">
+                    <h3 class="text-xl font-bold text-center mb-4">“武松打虎”文化影响力曲线 (示意)</h3>
+                    <div class="chart-container">
+                        <canvas id="legacyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-16 md:mt-24 pt-8 border-t border-gray-300">
+            <p class="text-gray-500">&copy; 2025 交互式文学分析报告。 </p>
+            <p class="text-sm text-gray-400 mt-1">根据《水浒传：武松打虎研究》报告生成。</p>
+        </footer>
+    </div>
+
+    <script>
+        const chartColors = {
+            accent1: 'rgba(211, 84, 0, 0.8)',
+            accent1Bg: 'rgba(211, 84, 0, 0.2)',
+            accent2: 'rgba(189, 195, 199, 1)',
+            accent2Bg: 'rgba(189, 195, 199, 0.2)',
+            text: '#333333',
+            grid: '#EAEAEA'
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            }
+            return label;
+        };
+        
+        const chartInstances = [];
+
+        function initializeCharts() {
+            Chart.defaults.font.family = "'Noto Sans SC', sans-serif";
+            Chart.defaults.color = chartColors.text;
+
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        backgroundColor: '#fff',
+                        titleColor: '#333',
+                        bodyColor: '#666',
+                        borderColor: '#ddd',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false
+                    }
+                }
+            };
+            
+            const contextCtx = document.getElementById('contextChart').getContext('2d');
+            chartInstances.push(new Chart(contextCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['高俅/蔡京等权臣', '腐败官吏', '普通百姓'],
+                    datasets: [{
+                        label: '社会权力指数 (示意)',
+                        data: [95, 75, 10],
+                        backgroundColor: [chartColors.accent1, 'rgba(211, 84, 0, 0.5)', chartColors.accent2],
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...defaultOptions,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: chartColors.grid }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: { ...defaultOptions.plugins, legend: { display: false } }
+                }
+            }));
+            
+            const fateCtx = document.getElementById('fateChart').getContext('2d');
+            chartInstances.push(new Chart(fateCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['英雄声望', '悲剧伏笔', '官府身份'],
+                    datasets: [{
+                        data: [50, 40, 10],
+                        backgroundColor: [chartColors.accent1, '#E74C3C', chartColors.accent2],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: { ...defaultOptions, cutout: '60%' }
+            }));
+
+            const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+            chartInstances.push(new Chart(comparisonCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['公共利益', '个人动机', '英雄荣耀', '社会影响', '道义正当性'],
+                    datasets: [{
+                        label: '武松打虎',
+                        data: [9, 6, 9, 8, 10],
+                        fill: true,
+                        backgroundColor: chartColors.accent1Bg,
+                        borderColor: chartColors.accent1,
+                        pointBackgroundColor: chartColors.accent1,
+                    }, {
+                        label: '李逵杀虎',
+                        data: [4, 9, 3, 5, 5],
+                        fill: true,
+                        backgroundColor: chartColors.accent2Bg,
+                        borderColor: chartColors.accent2,
+                        pointBackgroundColor: chartColors.accent2,
+                    }]
+                },
+                options: { ...defaultOptions,
+                    scales: {
+                        r: {
+                            angleLines: { color: chartColors.grid },
+                            grid: { color: chartColors.grid },
+                            pointLabels: { font: { size: 13 } },
+                            ticks: { display: false },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    }
+                }
+            }));
+
+            const legacyCtx = document.getElementById('legacyChart').getContext('2d');
+            chartInstances.push(new Chart(legacyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['明代 (小说定型)', '清代 (禁毁与流传)', '民国时期', '共和国早期', '90年代 (电视剧)', '当代 (新寓意)'],
+                    datasets: [{
+                        label: '文化影响力曲线',
+                        data: [60, 50, 70, 95, 85, 90],
+                        fill: 'start',
+                        borderColor: chartColors.accent1,
+                        backgroundColor: chartColors.accent1Bg,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: chartColors.accent1
+                    }]
+                },
+                options: { ...defaultOptions,
+                    scales: {
+                        y: {
+                           beginAtZero: true,
+                           grid: { color: chartColors.grid }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: { ...defaultOptions.plugins, legend: { display: false } }
+                }
+            }));
+        }
+
+        window.onload = initializeCharts;
+
+    </script>
+</body>
+</html>

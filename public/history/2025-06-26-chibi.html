@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赤壁之战：史实与演义</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', 'Noto Serif SC', serif;
+            background-color: #00425A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-node {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid #1F8A70;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .flowchart-arrow {
+            color: #BFDB38;
+            font-size: 2rem;
+            line-height: 1;
+            margin: 0.5rem 0;
+        }
+        .stat-card h3 {
+            color: #BFDB38;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center my-8 md:my-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-white tracking-wider">赤壁之战</h1>
+            <h2 class="text-xl md:text-2xl text-[#BFDB38] mt-2">The Battle of Red Cliffs: Fact vs. Fiction</h2>
+        </header>
+
+        <section id="intro" class="mb-12">
+            <div class="max-w-4xl mx-auto bg-white/10 p-6 rounded-lg shadow-xl">
+                <p class="text-lg text-center">公元208年，一场决定中国未来数十年命运的大战在长江之上爆发。曹操，挟统一北方之威南下，意图一举荡平江南，完成统一大业。然而，在赤壁，他遭遇了孙权与刘备联军的顽强抵抗。这场战役不仅是军事上的对决，更在后世的文学作品《三国演义》中，被演绎成一出充满智慧、计谋与传奇色彩的史诗。本图旨在解构历史的真实与文学的虚构，探寻赤壁之战的真相。</p>
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">智谋对决：史实 vs. 演义</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="stat-card bg-white/10 p-6 rounded-lg shadow-xl flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4 text-center">兵力对比的真相与夸张</h3>
+                    <p class="mb-4 flex-grow">《三国演义》极大地夸张了曹操的兵力以凸显联军胜利的来之不易。史实中的兵力差距虽然依旧悬殊，但并非小说中描绘的那般毫无胜算。</p>
+                    <div class="chart-container">
+                        <canvas id="forceComparisonChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white/10 p-6 rounded-lg shadow-xl flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4 text-center">曹操败因：天灾 vs. 人祸</h3>
+                    <p class="mb-4 flex-grow">历史记载，席卷曹营的瘟疫（疾疫）是导致其战斗力锐减的关键因素，重要性甚至不亚于军事决策。而小说则将失败完全归咎于联军的智谋，尤其是诸葛亮与庞统的计策。</p>
+                     <div class="chart-container">
+                        <canvas id="decisiveFactorsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-card lg:col-span-2 bg-white/10 p-6 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-center">关键计策的真正策划者</h3>
+                    <p class="mb-4">小说将赤壁之战的胜利归功于诸葛亮和庞统的天才计谋。然而，历史的真相是，许多关键决策的制定者另有其人，甚至有些是曹操自己为解决现实问题而采取的措施。</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-max text-left">
+                            <thead>
+                                <tr class="border-b border-gray-500">
+                                    <th class="p-2">关键事件</th>
+                                    <th class="p-2 text-[#FC7300]">史实记载 (History)</th>
+                                    <th class="p-2 text-[#1F8A70]">小说演义 (Fiction)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-600">
+                                    <td class="p-2 font-semibold">连环船 (Chaining the Boats)</td>
+                                    <td class="p-2">曹操为解决北方士兵晕船问题自行决策。</td>
+                                    <td class="p-2">庞统为配合火攻献上的“连环计”。</td>
+                                </tr>
+                                <tr class="border-b border-gray-600">
+                                    <td class="p-2 font-semibold">火攻计 (The Fire Attack)</td>
+                                    <td class="p-2">由东吴老将黄盖提出并执行。</td>
+                                    <td class="p-2">周瑜定计，诸葛亮协助，黄盖上演“苦肉计”。</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-semibold">借东风 (The East Wind)</td>
+                                    <td class="p-2">等待并利用冬季偶发的气象现象。</td>
+                                    <td class="p-2">诸葛亮设坛作法，以道术“借”来东南风。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="flow" class="mb-12">
+            <div class="stat-card bg-white/10 p-6 rounded-lg shadow-xl">
+                 <h3 class="text-2xl font-bold mb-4 text-center">乌林火海：一场精心策划的攻击</h3>
+                 <p class="text-center mb-6 max-w-3xl mx-auto">真实的火攻是一场结合了情报、欺诈、气象学和协同作战的完美军事行动。以下是其关键步骤：</p>
+                 <div class="flex flex-col items-center">
+                    <div class="flowchart-node">
+                        <span class="font-bold">1. 洞悉弱点</span><br>黄盖发现曹军战船相连，利于火攻。
+                    </div>
+                    <div class="flowchart-arrow">↓</div>
+                    <div class="flowchart-node">
+                        <span class="font-bold">2. 诈降计划</span><br>黄盖派出船队伪装投降，麻痹曹军。
+                    </div>
+                    <div class="flowchart-arrow">↓</div>
+                     <div class="flowchart-node">
+                        <span class="font-bold">3. 等待天时</span><br>联军等待冬季罕见的东南风刮起。
+                    </div>
+                    <div class="flowchart-arrow">↓</div>
+                    <div class="flowchart-node" style="border-color: #FC7300;">
+                        <span class="font-bold text-[#FC7300]">4. 致命一击 🔥</span><br>火船借风势冲入曹军舰队，点燃连环船。
+                    </div>
+                    <div class="flowchart-arrow">↓</div>
+                    <div class="flowchart-node">
+                        <span class="font-bold">5. 全面进攻</span><br>孙刘联军水陆并进，扩大战果，锁定胜局。
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <section id="impact" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">天下三分：赤壁的历史回响</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="stat-card bg-white/10 p-6 rounded-lg shadow-xl flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4 text-center">三国鼎立格局的诞生</h3>
+                    <p class="mb-4 flex-grow">赤壁之战彻底阻断了曹操的统一进程，为孙权和刘备赢得了宝贵的战略空间。战后，一个相对稳定的三方对峙局面形成，开启了长达半个世纪的三国时代。</p>
+                    <div class="chart-container">
+                        <canvas id="threeKingdomsChart"></canvas>
+                    </div>
+                </div>
+                <div class="stat-card bg-white/10 p-6 rounded-lg shadow-xl text-center">
+                    <h3 class="text-2xl font-bold mb-4">命运的转折点</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-5xl font-bold text-[#1F8A70]">孙权</h4>
+                            <p class="mt-2">巩固了江东的统治，为建立东吴政权奠定了坚如磐石的基础。</p>
+                        </div>
+                        <hr class="border-gray-600">
+                        <div>
+                           <h4 class="text-5xl font-bold text-[#1F8A70]">刘备</h4>
+                           <p class="mt-2">从寄人篱下的客将，一跃成为拥有荆州南部四郡的实力派，获得了建立蜀汉的战略跳板。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-700">
+            <p>赤壁之战的魅力在于，它完美展示了历史事实如何被文学叙事重塑，最终成为不朽的文化记忆。</p>
+            <div class="flex justify-center space-x-4 text-3xl mt-4">
+                <span>🎭</span>
+                <span>🎬</span>
+                <span>🎮</span>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        const wrapText = (text, maxLength) => {
+            if (text.length <= maxLength) return text;
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).length > maxLength) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine += (currentLine ? ' ' : '') + word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+        
+        const chartColors = {
+            caoCao: '#FC7300',
+            allies: '#1F8A70',
+            wei: '#FC7300',
+            shu: '#1F8A70',
+            wu: '#00AEEF',
+            factor1: '#FC7300',
+            factor2: '#BFDB38',
+            factor3: '#1F8A70',
+            gridColor: 'rgba(255, 255, 255, 0.2)',
+            textColor: '#F5F5F5'
+        };
+
+        const forceCtx = document.getElementById('forceComparisonChart').getContext('2d');
+        new Chart(forceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['史实 (History)', '演义 (Fiction)'],
+                datasets: [
+                    {
+                        label: '曹操军 (Cao Cao)',
+                        data: [230000, 830000],
+                        backgroundColor: chartColors.caoCao,
+                        borderColor: chartColors.caoCao,
+                        borderWidth: 1
+                    },
+                    {
+                        label: '孙刘联军 (Allies)',
+                        data: [50000, 50000],
+                        backgroundColor: chartColors.allies,
+                        borderColor: chartColors.allies,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: chartColors.textColor } },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { 
+                            color: chartColors.textColor,
+                            callback: function(value) {
+                                return value / 10000 + '万';
+                            }
+                        },
+                        grid: { color: chartColors.gridColor }
+                    },
+                    x: {
+                        ticks: { color: chartColors.textColor },
+                        grid: { color: chartColors.gridColor }
+                    }
+                }
+            }
+        });
+
+        const factorsCtx = document.getElementById('decisiveFactorsChart').getContext('2d');
+        new Chart(factorsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['瘟疫 (Plague)', '不习水战 (Naval Inexperience)', '联军计策 (Allied Strategy)'],
+                datasets: [{
+                    label: '曹操败因 (史实)',
+                    data: [45, 30, 25],
+                    backgroundColor: [chartColors.factor1, chartColors.factor2, chartColors.factor3],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { color: chartColors.textColor }
+                    },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        const kingdomsCtx = document.getElementById('threeKingdomsChart').getContext('2d');
+        new Chart(kingdomsCtx, {
+            type: 'pie',
+            data: {
+                labels: [wrapText('魏 (Wei) - 曹操', 16), wrapText('蜀 (Shu) - 刘备', 16), wrapText('吴 (Wu) - 孙权', 16)],
+                datasets: [{
+                    label: '天下三分势力',
+                    data: [45, 25, 30],
+                    backgroundColor: [chartColors.wei, chartColors.shu, chartColors.wu],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                 plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { color: chartColors.textColor }
+                     },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
