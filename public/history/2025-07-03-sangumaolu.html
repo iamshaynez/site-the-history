@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息图：茅庐定策 - 三顾茅庐的历史与影响</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F0F4F8;
+            color: #102A43;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-arrow {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flowchart-arrow::after {
+            content: '▼';
+            font-size: 24px;
+            color: #4A90E2;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #4A90E2;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #F0F4F8;
+            border: 4px solid #4A90E2;
+            transform: translateX(-50%);
+        }
+        .timeline-content {
+            width: calc(50% - 40px);
+        }
+        .timeline-left {
+            left: 0;
+            text-align: right;
+        }
+        .timeline-right {
+            right: 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#102A43] mb-4">茅庐定策</h1>
+            <p class="text-xl md:text-2xl text-[#334E68]">三顾茅庐的历史真相与千年回响 (公元207年)</p>
+        </header>
+
+        <main>
+            <section id="context" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">第一章：乱世舞台 - 历史的必然选择</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-12 text-[#486581]">公元三世纪初，汉室倾颓，群雄逐鹿。在战火纷飞的中原，一次决定未来百年格局的会面正在酝酿。这不是偶然的相遇，而是时代、抱负与困境交织下的必然结果。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">😩</div>
+                        <h3 class="text-2xl font-bold mb-2">奔波的游龙：刘备</h3>
+                        <p class="text-[#486581] mb-4">年近半百，寄人篱下。虽有皇叔之名与仁德之望，却屡战屡败，无立锥之地，迫切需要一位能擘画未来的战略家。</p>
+                        <div class="text-3xl font-bold text-[#4A90E2]">~47岁</div>
+                        <p class="text-sm text-[#486581]">建安十二年时年龄</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">🤔</div>
+                        <h3 class="text-2xl font-bold mb-2">蛰伏的卧龙：诸葛亮</h3>
+                        <p class="text-[#486581] mb-4]">躬耕南阳，静观时变。他以管仲、乐毅自比，胸怀天下，却在等待一位真正值得辅佐、能实现其政治抱负的明主。</p>
+                        <div class="text-3xl font-bold text-[#4A90E2]">27岁</div>
+                        <p class="text-sm text-[#486581]">建安十二年时年龄</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-lg p-6 md:col-span-2 lg:col-span-1">
+                         <h3 class="text-xl font-bold mb-4 text-center">公元207年势力对比</h3>
+                        <div class="chart-container h-64 md:h-auto">
+                            <canvas id="powerBalanceChart"></canvas>
+                        </div>
+                        <p class="text-center mt-4 text-sm text-[#486581]">与曹操和孙权相比，刘备的实力微不足道，凸显了他求贤若渴的急迫性。</p>
+                    </div>
+
+                </div>
+            </section>
+            
+            <section id="the-visit" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">第二章：叩门之声 - 史实与演义的交响</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-12 text-[#486581]">“三顾茅庐”如何从寥寥数笔的史实，演变为家喻户晓的戏剧化传奇？对比正史与小说的记载，我们能发现一个文化符号的塑造过程。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-center">《三国志》的简练记述</h3>
+                        <div class="text-center p-8 border-4 border-dashed border-[#81C7D4] rounded-lg">
+                            <p class="text-lg text-[#334E68]">由是先主遂诣亮，</p>
+                            <p class="text-4xl font-bold my-4 text-[#4A90E2]">凡三往，乃见。</p>
+                            <p class="text-sm text-[#486581]">西晋 · 陈寿</p>
+                        </div>
+                         <p class="mt-4 text-[#486581]">史书记载确认了“三次拜访”的核心事实，强调了刘备为求贤才所展现的非凡姿态——一次权力等级的颠倒，这本身就是值得载入史册的政治行为。</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-center">《三国演义》的艺术再创作</h3>
+                        <div class="space-y-4">
+                             <div>
+                                <h4 class="font-bold text-[#4A90E2]">一顾：扑空</h4>
+                                <p class="text-sm text-[#486581]">刘备、关、张初访，只见书童，未见其人。</p>
+                            </div>
+                            <div class="flowchart-arrow"></div>
+                            <div>
+                                <h4 class="font-bold text-[#4A90E2]">二顾：风雪</h4>
+                                <p class="text-sm text-[#486581]">冒雪再访，仍未得见，但巧遇其友，更添敬仰。</p>
+                            </div>
+                            <div class="flowchart-arrow"></div>
+                            <div>
+                               <h4 class="font-bold text-[#4A90E2]">三顾：等待</h4>
+                                <p class="text-sm text-[#486581]">春暖花开，刘备耐心等待诸葛亮午睡醒来，终得相见。</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-[#486581]">罗贯中通过丰富的细节、环境的烘托和人物性格的冲突，将一次招募行为塑造成一出充满戏剧张力、完美诠释君臣之道的千古名场面。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="the-plan" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">第三章：宏伟蓝图 - 《隆中对》的远见与缺陷</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-12 text-[#486581]">茅庐之中，一份奠定此后数十年格局的战略计划诞生。它既是天才的构想，也埋下了日后失败的种子。</p>
+                
+                <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                    <h3 class="text-2xl font-bold mb-6 text-center">天下三分：一份帝国的创业计划书</h3>
+                    <div class="relative py-8">
+                        <div class="timeline-line"></div>
+                        <div class="relative flex justify-between items-center mb-12">
+                            <div class="timeline-content timeline-left">
+                                <h4 class="font-bold text-xl text-[#102A43]">第一步：形势判断 (有所不为)</h4>
+                                <p class="text-[#486581]">北有曹操“挟天子以令诸侯”，不可争锋。东有孙权“国险而民附”，可以为援。明确了战略的禁区。</p>
+                            </div>
+                            <div class="timeline-dot" style="top: 50%; transform: translate(-50%, -50%);"></div>
+                            <div class="timeline-content timeline-right"></div>
+                        </div>
+                        <div class="relative flex justify-between items-center mb-12">
+                            <div class="timeline-content timeline-left"></div>
+                            <div class="timeline-dot" style="top: 50%; transform: translate(-50%, -50%);"></div>
+                            <div class="timeline-content timeline-right">
+                                <h4 class="font-bold text-xl text-[#102A43]">第二步：机遇识别 (有所必为)</h4>
+                                <p class="text-[#486581]">夺取荆州为根基，再取益州为后盾。精准地找到了治理者无能、却具备极高战略价值的两块“蓝海市场”。</p>
+                            </div>
+                        </div>
+                         <div class="relative flex justify-between items-center">
+                            <div class="timeline-content timeline-left">
+                                <h4 class="font-bold text-xl text-[#102A43]">第三步：终极设想 (霸业可成)</h4>
+                                <p class="text-[#486581]">待天下有变，从荆、益两路出兵，钳形攻势北伐中原，则“霸业可成，汉室可兴”。</p>
+                            </div>
+                            <div class="timeline-dot" style="top: 50%; transform: translate(-50%, -50%);"></div>
+                             <div class="timeline-content timeline-right"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-center">战略的阿喀琉斯之踵</h3>
+                        <div class="chart-container">
+                            <canvas id="strategyFlawChart"></canvas>
+                        </div>
+                        <p class="text-center mt-4 text-sm text-[#486581]">整个宏伟蓝图的成败都系于荆州。然而，对东吴而言，荆州是其生死存亡的关键，这使得孙刘联盟存在天然且不可调和的矛盾，最终导致了计划的破产。</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center">
+                        <h3 class="text-xl font-bold mb-4 text-center">从蓝图到잿烬</h3>
+                        <ul class="space-y-3 text-[#334E68]">
+                            <li class="flex items-start"><span class="text-green-500 text-2xl mr-3">✔</span> <div><strong class="text-green-600">公元208-219年：</strong> 赤壁之战后，取荆南、借南郡、夺益州、占汉中，《隆中对》完美执行。</div></li>
+                            <li class="flex items-start"><span class="text-red-500 text-2xl mr-3">✖</span> <div><strong class="text-red-600">公元219年：</strong> 关羽大意失荆州，战略根基被摧毁，《隆中对》的核心支点断裂。</div></li>
+                            <li class="flex items-start"><span class="text-red-500 text-2xl mr-3">✖</span> <div><strong class="text-red-600">公元222-223年：</strong> 夷陵之战惨败，蜀汉元气大伤，兴复汉室的梦想变得遥不可及。</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+             <section id="legacy" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">第四章：千年的回响 - 永不过时的智慧</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-12 text-[#486581]">一千八百多年前的这场会面，已化为不朽的文化符号，其蕴含的领导力、战略与人才观，至今仍在商业、政治等领域闪耀着智慧的光芒。</p>
+                
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-center">现代影响力象限</h3>
+                        <div class="chart-container">
+                            <canvas id="legacyImpactChart"></canvas>
+                        </div>
+                        <p class="text-center mt-4 text-sm text-[#486581]">“三顾茅庐”的故事在文化、领导力教学、商业策略和政治话语中均产生了深远影响。</p>
+                    </div>
+                     <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-center">核心领导力课程</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div class="text-4xl mr-4">👑</div>
+                                <div>
+                                    <h4 class="font-bold">领导者亲力亲为</h4>
+                                    <p class="text-[#486581]">招募顶尖人才，是最高领导者的首要职责，必须亲自投入，展现诚意。</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="text-4xl mr-4">🎯</div>
+                                <div>
+                                    <h4 class="font-bold">愿景驱动</h4>
+                                    <p class="text-[#486581]">吸引人才的核心是提供一个能激发共鸣的宏大使命，而非仅仅是物质回报。</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="text-4xl mr-4">⏳</div>
+                                <div>
+                                    <h4 class="font-bold">耐心与毅力</h4>
+                                    <p class="text-[#486581]">获取稀缺资源需要非凡的毅力，以及坦然面对挫折与拒绝的胸怀。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="text-center mt-12 pt-8 border-t border-[#81C7D4]">
+             <p class="text-sm text-[#486581]">本信息图内容基于《茅庐定策：三顾茅庐的历史真相与千年回响》报告生成。</p>
+             <p class="text-sm text-[#486581]">使用Chart.js与Tailwind CSS构建。确认未使用SVG或Mermaid JS。</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const chartColors = {
+            darkBlue: '#102A43',
+            mediumBlue: '#334E68',
+            lightBlue: '#486581',
+            accentBlue: '#4A90E2',
+            accentTeal: '#81C7D4',
+            background: 'rgba(74, 144, 226, 0.1)'
+        };
+
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: chartColors.darkBlue,
+                        font: {
+                           family: "'Noto Sans SC', sans-serif"
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                     bodyFont: {
+                        family: "'Noto Sans SC', sans-serif"
+                    },
+                    titleFont: {
+                        family: "'Noto Sans SC', sans-serif"
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: chartColors.lightBlue, font: { family: "'Noto Sans SC', sans-serif" } },
+                    grid: { display: false }
+                },
+                y: {
+                    ticks: { color: chartColors.lightBlue, font: { family: "'Noto Sans SC', sans-serif" } },
+                    grid: { color: '#DCE7F3' }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('powerBalanceChart'), {
+            type: 'bar',
+            data: {
+                labels: ['曹操', '孙权', '刘备 (三顾茅庐前)'],
+                datasets: [{
+                    label: '综合实力指数（估算）',
+                    data: [95, 75, 10],
+                    backgroundColor: [chartColors.mediumBlue, chartColors.lightBlue, chartColors.accentTeal],
+                    borderColor: [chartColors.darkBlue, chartColors.mediumBlue, chartColors.accentBlue],
+                    borderWidth: 1
+                }]
+            },
+            options: { ...defaultChartOptions, indexAxis: 'y' }
+        });
+
+        new Chart(document.getElementById('strategyFlawChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['荆州的安全 (致命弱点)', '与孙权的联盟 (不稳定)', '两路出兵的可行性 (高风险)'],
+                datasets: [{
+                    label: '战略依赖度',
+                    data: [60, 25, 15],
+                    backgroundColor: [
+                        '#E53E3E', 
+                        chartColors.accentTeal,
+                        chartColors.lightBlue
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                 plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: chartColors.darkBlue,
+                            font: { family: "'Noto Sans SC', sans-serif" },
+                            boxWidth: 20
+                        }
+                    },
+                    tooltip: {
+                         callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        bodyFont: { family: "'Noto Sans SC', sans-serif" },
+                        titleFont: { family: "'Noto Sans SC', sans-serif" }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('legacyImpactChart'), {
+            type: 'radar',
+            data: {
+                labels: ['文化符号', '领导力课程', '商业策略', '政治话语', '民间艺术'],
+                datasets: [{
+                    label: '影响力指数',
+                    data: [95, 90, 75, 70, 85],
+                    fill: true,
+                    backgroundColor: chartColors.background,
+                    borderColor: chartColors.accentBlue,
+                    pointBackgroundColor: chartColors.accentBlue,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: chartColors.accentBlue
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                         callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        bodyFont: { family: "'Noto Sans SC', sans-serif" },
+                        titleFont: { family: "'Noto Sans SC', sans-serif" }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#DCE7F3' },
+                        grid: { color: '#DCE7F3' },
+                        pointLabels: { 
+                            color: chartColors.darkBlue, 
+                            font: { 
+                                size: 14,
+                                family: "'Noto Sans SC', sans-serif"
+                            } 
+                        },
+                        ticks: {
+                            backdropColor: 'transparent',
+                            color: chartColors.lightBlue
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

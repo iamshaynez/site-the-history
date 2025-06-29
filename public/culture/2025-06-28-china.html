@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>china 这事儿都怪乾隆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #F0F8FF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        h1, h2, h3 {
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-blue-900 mb-4">china 这事儿都怪乾隆</h1>
+            <p class="max-w-4xl mx-auto text-lg text-blue-800/80 leading-relaxed">
+                许多年后，当人们面对那些布满繁密花纹、极尽工巧之能事的清代瓷器时，准会想起那个遥远的下午，乾隆皇帝，这位人世间最孤独的收藏家，是如何把他整个帝国的荣耀与他个人的意志，悉数倾注在景德镇熊熊燃烧的窑火之中。
+            </p>
+        </header>
+
+        <section id="timeline" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-10">美的谱系：一部土与火的家族史诗</h2>
+            <div class="relative w-full px-4">
+                <div class="absolute h-full border-l-4 border-blue-300 border-dashed top-0 left-1/2 -ml-2"></div>
+                <div class="space-y-12">
+
+                    <div class="flex md:flex-row-reverse items-center w-full">
+                        <div class="w-1/2 text-right md:text-left md:pl-8">
+                            <div class="bg-white p-6 rounded-lg shadow-xl border-l-4 border-amber-400">
+                                <h3 class="font-bold text-xl text-amber-800">唐：洪荒与华彩</h3>
+                                <p class="text-sm text-gray-600 mt-2">雄浑奔放，富丽堂皇。三彩釉色，是面向世界的喧哗呐喊，一个自信到无需内敛的黄金时代。</p>
+                            </div>
+                        </div>
+                        <div class="w-auto z-10">
+                            <div class="bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg">唐</div>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+
+                    <div class="flex items-center w-full">
+                        <div class="w-1/2 text-right pr-8">
+                            <div class="bg-white p-6 rounded-lg shadow-xl border-r-4 border-teal-500">
+                                <h3 class="font-bold text-xl text-teal-800">宋：简素与内省</h3>
+                                <p class="text-sm text-gray-600 mt-2">雨过天青，道禅合一。汝窑与哥窑，是一个王朝转向内心的沉思独白，在残缺中发现完美。</p>
+                            </div>
+                        </div>
+                         <div class="w-auto z-10">
+                            <div class="bg-teal-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg">宋</div>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+
+                    <div class="flex md:flex-row-reverse items-center w-full">
+                        <div class="w-1/2 text-right md:text-left md:pl-8">
+                            <div class="bg-white p-6 rounded-lg shadow-xl border-l-4 border-blue-600">
+                                <h3 class="font-bold text-xl text-blue-800">元：雄浑与交响</h3>
+                                <p class="text-sm text-gray-600 mt-2">草原帝国，蓝色火焰。苏麻离青，点燃了全球化浪潮下繁复叙事的青花革命。</p>
+                            </div>
+                        </div>
+                         <div class="w-auto z-10">
+                            <div class="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg">元</div>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+
+                    <div class="flex items-center w-full">
+                        <div class="w-1/2 text-right pr-8">
+                           <div class="bg-white p-6 rounded-lg shadow-xl border-r-4 border-red-500">
+                                <h3 class="font-bold text-xl text-red-800">明：雅致与平衡</h3>
+                                <p class="text-sm text-gray-600 mt-2">甜白素净，斗彩精巧。一个帝国在自信中重塑了内敛和谐的文化品味，臻于化境。</p>
+                            </div>
+                        </div>
+                         <div class="w-auto z-10">
+                            <div class="bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg">明</div>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+
+                    <div class="flex md:flex-row-reverse items-center w-full">
+                        <div class="w-1/2 text-right md:text-left md:pl-8">
+                             <div class="bg-white p-6 rounded-lg shadow-xl border-l-4 border-purple-600">
+                                <h3 class="font-bold text-xl text-purple-800">清·乾隆：崩塌与炫技</h3>
+                                <p class="text-sm text-gray-600 mt-2">万工之母，玲珑之巧。一位皇帝用令人窒息的拥抱，将技艺推向巅峰，也将审美推向终点。</p>
+                            </div>
+                        </div>
+                         <div class="w-auto z-10">
+                            <div class="bg-purple-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg">清</div>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-10">审美维度的变迁</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">从简素到繁缛</h3>
+                    <p class="text-gray-700 leading-relaxed">中国瓷器的审美并非线性发展，而是在几个关键维度上摇摆。宋代将“素净”与“雅致”推向了哲学的顶峰，追求天人合一的宁静。而乾隆时代，则将“技艺”与“繁复”发展到极致，其背后是帝王包揽古今、超越一切的雄心。这张雷达图直观地比较了宋、明、清三代在审美取向上的巨大差异。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <div class="chart-container">
+                        <canvas id="aestheticRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="ming-dynasty" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-10">明：自信的平衡点</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                 <div class="bg-white p-6 rounded-lg shadow-xl order-2 md:order-1">
+                    <div class="chart-container">
+                        <canvas id="mingDonutChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl order-1 md:order-2">
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">甜白的宣言与斗彩的雅趣</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">明代，一个充满文化自信的王朝，在审美上达到了完美的平衡。一方面，永乐皇帝的宫廷将“甜白”推向“素若积雪”的纯净极致。据考古发现，景德镇御窑厂遗址出土的永乐瓷片中，甜白瓷占比高达惊人的98%，这是一种净化陶瓷语言的政治与审美宣言。</p>
+                    <p class="text-gray-700 leading-relaxed">另一方面，成化时期的“斗彩”则于盈盈可握的“鸡缸杯”之上，将雅致的生活意趣描绘到毫巅。明代的审美，是纯粹与和谐的双生花，一个即将被打破的黄金时代。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="qianlong-era" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-10">乾隆：炫技的顶峰与审美的迷途</h2>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2">
+                        <h3 class="text-2xl font-bold text-blue-900 mb-4">瓷母：技术的万神殿</h3>
+                        <p class="text-gray-700 leading-relaxed mb-4">“各种釉彩大瓶”，这件被后世称为“瓷母”的神作，是乾隆个人意志的终极体现。它不是一件器物，而是一部用黏土写成的技术百科全书，一座献给皇帝本人的陶瓷工艺万神殿。</p>
+                        <p class="text-gray-700 leading-relaxed">它的烧造难度是灾难性的，其首要目的不再是表达意境，而是进行一场震耳欲聋的技术宣言。和谐的审美在此崩塌为一种积累与陈列。它是一件技艺的杰作，却也是一个美学的“科学怪人”。</p>
+                        <div class="mt-6 text-center bg-blue-50 p-4 rounded-lg">
+                           <div class="text-6xl font-bold text-purple-700">17</div>
+                           <div class="text-lg text-purple-900 font-semibold mt-2">种釉彩工艺集于一身</div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3 flex flex-col justify-center">
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="qianlongBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-12 pt-8 border-t border-gray-200">
+                     <h3 class="text-2xl font-bold text-center text-blue-900 mb-6">转心瓶：从艺术到机关</h3>
+                      <p class="text-center max-w-3xl mx-auto text-gray-700 leading-relaxed mb-8">如果说“瓷母”是一部百科全书，那么“转心瓶”就是一个魔术道具。这些陶瓷工程学的奇迹，将艺术的重心完全转移到了机关的巧妙之上。器物不再是静观的对象，而是互动的玩具。它向观者提出的首要问题，不再是“它唤起了我怎样的感受？”，而是“这到底是怎么做出来的？”</p>
+                     <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="text-center p-4 bg-gray-100 rounded-lg shadow-inner w-full md:w-auto">
+                           <div class="text-purple-600 text-3xl mb-2">①</div>
+                           <h4 class="font-bold">内瓶绘制</h4>
+                           <p class="text-sm">绘制叙事画卷</p>
+                        </div>
+                        <div class="text-5xl text-blue-300 font-thin transform -rotate-90 md:rotate-0">→</div>
+                        <div class="text-center p-4 bg-gray-100 rounded-lg shadow-inner w-full md:w-auto">
+                           <div class="text-purple-600 text-3xl mb-2">②</div>
+                           <h4 class="font-bold">外瓶镂空</h4>
+                           <p class="text-sm">精雕细刻窗口</p>
+                        </div>
+                         <div class="text-5xl text-blue-300 font-thin transform -rotate-90 md:rotate-0">→</div>
+                        <div class="text-center p-4 bg-gray-100 rounded-lg shadow-inner w-full md:w-auto">
+                           <div class="text-purple-600 text-3xl mb-2">③</div>
+                           <h4 class="font-bold">精密烧造</h4>
+                           <p class="text-sm">尺寸分毫不差</p>
+                        </div>
+                         <div class="text-5xl text-blue-300 font-thin transform -rotate-90 md:rotate-0">→</div>
+                        <div class="text-center p-4 bg-gray-100 rounded-lg shadow-inner w-full md:w-auto">
+                           <div class="text-purple-600 text-3xl mb-2">④</div>
+                           <h4 class="font-bold">奇迹组装</h4>
+                           <p class="text-sm">创造动态奇观</p>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+        <footer class="text-center my-12">
+            <p class="max-w-4xl mx-auto text-lg text-blue-800/80 leading-relaxed">
+                最终，乾隆，这位伟大的、孤独的君主，成了这个陶瓷家族的最后一位大家长。在他对一种不可能的、无所不包的完美的追求中，中国陶瓷那条漫长、蜿蜒的河流，终于抵达了它的三角洲，分岔为成百上千条炫目、繁复、却浅显的溪流，然后，终于、也永远地，汇入了大海。
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                           family: "'Noto Serif SC', serif",
+                           size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    bodyFont: {
+                        family: "'Noto Serif SC', serif"
+                    },
+                    titleFont: {
+                        family: "'Noto Serif SC', serif"
+                    }
+                }
+            }
+        };
+
+        const wrapLabel = (label, maxWidth = 16) => {
+            if (label.length <= maxWidth) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const aestheticRadarCtx = document.getElementById('aestheticRadarChart');
+        if (aestheticRadarCtx) {
+            new Chart(aestheticRadarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['素净 (Purity)', '雅致 (Elegance)', '雄浑 (Grandeur)', '繁复 (Complexity)', '技艺 (Technique)'],
+                    datasets: [{
+                        label: '宋 (Song)',
+                        data: [9, 9, 3, 2, 6],
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        pointBackgroundColor: 'rgba(13, 148, 136, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(13, 148, 136, 1)'
+                    }, {
+                        label: '明 (Ming)',
+                        data: [8, 8, 6, 6, 8],
+                        backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        pointBackgroundColor: 'rgba(220, 38, 38, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(220, 38, 38, 1)'
+                    },{
+                        label: '清·乾隆 (Qianlong)',
+                        data: [2, 3, 9, 10, 10],
+                        backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        pointBackgroundColor: 'rgba(124, 58, 237, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(124, 58, 237, 1)'
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            pointLabels: {
+                                font: {
+                                    family: "'Noto Serif SC', serif",
+                                    size: 12
+                                }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    }
+                }
+            });
+        }
+        
+        const mingDonutCtx = document.getElementById('mingDonutChart');
+        if (mingDonutCtx) {
+            new Chart(mingDonutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['永乐甜白瓷', '其它'],
+                    datasets: [{
+                        label: '出土占比',
+                        data: [98, 2],
+                        backgroundColor: ['#EFF6FF', '#BFDBFE'],
+                        borderColor: ['#3B82F6', '#93C5FD'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        title: {
+                            display: true,
+                            text: '永乐御窑厂出土瓷片占比',
+                            font: { size: 16, family: "'Noto Serif SC', serif" },
+                            padding: { top: 10, bottom: 20 }
+                        }
+                    }
+                }
+            });
+        }
+
+        const qianlongBarCtx = document.getElementById('qianlongBarChart');
+        if (qianlongBarCtx) {
+            const originalLabels = ['仿汝釉', '仿官釉', '仿哥釉', '仿钧釉窑变', '粉青釉', '霁蓝釉', '松石绿釉', '青花', '釉里红', '斗彩', '粉彩', '珐琅彩', '金彩', '洋彩', '雕刻', '镂空', '转心'];
+            const wrappedLabels = originalLabels.map(label => wrapLabel(label));
+
+            new Chart(qianlongBarCtx, {
+                type: 'bar',
+                data: {
+                    labels: wrappedLabels,
+                    datasets: [{
+                        label: '部分炫技工艺展示',
+                        data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(() => Math.floor(Math.random() * 3) + 8),
+                        backgroundColor: [
+                          'rgba(147, 197, 253, 0.7)', 'rgba(96, 165, 250, 0.7)',
+                          'rgba(59, 130, 246, 0.7)', 'rgba(37, 99, 235, 0.7)',
+                          'rgba(29, 78, 216, 0.7)', 'rgba(167, 139, 250, 0.7)',
+                          'rgba(139, 92, 246, 0.7)', 'rgba(124, 58, 237, 0.7)',
+                          'rgba(109, 40, 217, 0.7)', 'rgba(244, 114, 182, 0.7)',
+                          'rgba(236, 72, 153, 0.7)', 'rgba(219, 39, 119, 0.7)',
+                          'rgba(245, 158, 11, 0.7)', 'rgba(217, 119, 6, 0.7)',
+                          'rgba(16, 185, 129, 0.7)', 'rgba(5, 150, 105, 0.7)',
+                          'rgba(220, 38, 38, 0.7)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            display: false,
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    family: "'Noto Serif SC', serif"
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: '“瓷母”所含部分工艺类型',
+                            font: { size: 16, family: "'Noto Serif SC', serif" },
+                            padding: { top: 10, bottom: 20 }
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
