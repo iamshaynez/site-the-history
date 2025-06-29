@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正文：china 这事儿都怪乾隆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #FDFBF5;
+            color: #433A3F;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .active-link {
+            color: #4A6D7C;
+            border-bottom-color: #4A6D7C;
+        }
+        .revolving-vase-container:hover .revolving-vase-outer {
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky top-0 bg-[#FDFBF5]/80 backdrop-blur-sm z-50 shadow-sm">
+        <nav class="container mx-auto px-4">
+            <ul class="flex justify-center items-center space-x-4 md:space-x-8 py-4 overflow-x-auto whitespace-nowrap">
+                <li><a href="#intro" class="nav-link font-bold text-lg text-gray-700 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">序章</a></li>
+                <li><a href="#tang" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">唐</a></li>
+                <li><a href="#song" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">宋</a></li>
+                <li><a href="#yuan" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">元</a></li>
+                <li><a href="#ming" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">明</a></li>
+                <li><a href="#qing" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">清·乾隆</a></li>
+                <li><a href="#summary" class="nav-link font-semibold text-gray-600 hover:text-[#4A6D7C] border-b-2 border-transparent pb-1">总览</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="intro" class="text-center my-16 scroll-mt-20">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#6B4F4F] mb-6 leading-tight">china 这事儿都怪乾隆</h1>
+            <p class="max-w-4xl mx-auto text-lg text-gray-700/90 leading-relaxed">
+                许多年后，当人们面对那些布满繁密花纹、极尽工巧之能事的清代瓷器时，准会想起那个遥远的下午，乾隆皇帝，这位人世间最孤独的收藏家，是如何把他整个帝国的荣耀与他个人的意志，悉数倾注在景德镇熊熊燃烧的窑火之中。这是一个关于土与火的家族漫长而注定的命运史诗。
+            </p>
+        </section>
+
+        <div class="space-y-24">
+
+            <section id="tang" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-[#A27B5C] mb-10">洪荒：土与火的创世诗</h2>
+                <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="order-2 md:order-1">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">盛世华彩的记忆：唐三彩</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">在我们这个家族故事的开端，站着一位喧哗、壮丽、甚至有些野性的祖先。它并非真正意义上的瓷，而是**唐三彩**，一种低温铅釉陶器。工匠们用一种近乎挥霍的姿态，将黄、绿、白等釉色浇灌在陶胎上，任其在窑火中肆意流淌、交融。最终呈现的效果，不是一种精密的控制，而是一种生命力的勃发，一个王朝鼎盛时期最直白的宣言。</p>
+                            <div class="mt-4 p-4 bg-[#F0EBE3] rounded-lg text-sm text-gray-700"><strong>核心特征：</strong>低温铅釉，多彩并施，专为随葬而生的**冥器**，代表着外向、毫不掩饰、追求极致绚烂的审美起点。</div>
+                        </div>
+                        <div class="order-1 md:order-2">
+                             <img src="https://placehold.co/600x400/DCD7C9/A27B5C?text=唐三彩战马" alt="唐三彩战马" class="rounded-lg shadow-md w-full h-auto object-cover">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="song" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-[#4A6D7C] mb-10">简素：一个王朝的内省与独白</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50">
+                         <h3 class="text-2xl font-bold text-gray-800 mb-4">雨过天青云破处：汝窑的道与禅</h3>
+                         <img src="https://placehold.co/600x400/EAFDFC/4A6D7C?text=汝窑水仙盆" alt="北宋汝窑青瓷无纹水仙盆" class="rounded-lg shadow-md w-full h-auto object-cover mb-4">
+                         <p class="text-gray-600 leading-relaxed">如果说唐三彩是面向世界的呐喊，那么宋代的瓷器，就是转向内心的沉思。顶峰便是**汝窑**，源于宋徽宗“雨过天青云破处”的诗意指令。工匠以“裹足支烧”追求极致完美，釉料中加入玛瑙，器物温润如玉，是道家与禅宗思想的完美载体，在极简之中发现深邃之美。</p>
+                    </div>
+                    <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">金丝铁线：哥窑的残缺之美</h3>
+                        <img src="https://placehold.co/600x400/E8DFCA/6B4F4F?text=哥窑开片" alt="哥窑器物特写" class="rounded-lg shadow-md w-full h-auto object-cover mb-4">
+                        <p class="text-gray-600 leading-relaxed">在宋代审美的另一面是**哥窑**。它在“缺陷”中发现了美。标志性的“金丝铁线”是一种刻意为之的开片效果，工匠通过控制釉与胎的收缩差异，让开片本身成为装饰。这是一种在自然、偶然与不完美中寻找诗意的高妙审美，将技术瑕疵提升为艺术特征。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="yuan" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-[#325288] mb-10">雄浑：草原帝国与蓝色火焰的交响</h2>
+                 <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                             <img src="https://placehold.co/600x600/D8E3E7/325288?text=元青花大罐" alt="元青花大罐" class="rounded-lg shadow-md w-full h-auto object-cover">
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">苏麻离青的远征：元青花的诞生</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">元朝，一场由全球化催生的审美革命。来自波斯的钴料“**苏麻离青**”点燃了**青花**的蓝色火焰。宋代私密、小巧的器形被硕大、厚重的器物取代，以满足中东市场的需求。宋人留白的艺术被繁复、致密的满工装饰颠覆，元杂剧的历史故事被描绘其上，充满了雄浑大气与磅礴的生命力。</p>
+                             <div class="mt-4 p-4 bg-[#EAFDFC] rounded-lg text-sm text-gray-700"><strong>核心特征：</strong>进口苏麻离青，器形硕大，满工装饰，叙事性强，是全球化需求的产物。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="ming" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-[#C36A2D] mb-10">雅致：一个帝国的自信与内敛</h2>
+                 <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50">
+                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">明代审美的双生花</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">甜白的纯净：“素净”的极致</h4>
+                            <p class="text-gray-600 leading-relaxed mb-4">永乐朝的“**甜白**”瓷，釉色“白如凝脂，素若积雪”，是一种对汉文化含蓄、纯粹之美的回归。其最精妙处在于“暗花”装饰，只有在特定光线下才能看见，是一种私密的、需要用心体会的愉悦。</p>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3 mt-6">斗彩的精巧：“雅致”的顶峰</h4>
+                            <p class="text-gray-600 leading-relaxed">成化朝的“**斗彩**”，于“鸡缸杯”等精巧小器之上，将釉下青花与釉上众彩结合，描绘温馨的田园小景。它代表了一种克制、和谐的色彩运用，与甜白的纯粹构成了明代审美的两个极点。</p>
+                        </div>
+                        <div>
+                             <p class="text-center text-sm text-gray-500 mb-2">景德镇永乐御窑厂遗址出土瓷片</p>
+                            <div class="chart-container h-64 md:h-80">
+                                <canvas id="mingDonutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="qing" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-[#594545] mb-10">崩塌：一位皇帝的炫技与孤独</h2>
+                <div class="bg-white/60 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/50 space-y-12">
+                     <div>
+                        <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">审美维度的终极变迁</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                             <div class="chart-container">
+                                <canvas id="aestheticRadarChart"></canvas>
+                            </div>
+                            <div class="prose max-w-none text-gray-600">
+                                <p>乾隆，这位艺术的收藏家与独裁者，将瓷器的审美推向了两个极端：一方面极度**崇古**，下令仿制历代名瓷；另一方面又对**新奇**有着永不满足的渴求。他想一个人，占尽整个艺术史。</p>
+                                <p>这张雷达图清晰地展示了从宋到明，再到乾隆时代审美维度的剧变。“素净”与“雅致”被彻底边缘化，而“繁复”与“技艺”被推向了前所未有的顶点，一种和谐的审美，最终**崩塌**为一种积累与陈列。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 border-t border-gray-200/80">
+                         <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">技术的万神殿：“瓷母”的诞生</h3>
+                         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+                             <div class="lg:col-span-2">
+                                <p class="text-gray-600 leading-relaxed mb-4">“各种釉彩大瓶”，这件被后世称为“**瓷母**”的神作，是乾隆个人意志的终极体现。它是一部用黏土写成的技术百科全书，在一件器物上集结了**多达17种**不同的釉彩装饰工艺。它的烧造难度是灾难性的，其首要目的不再是表达意境，而是进行一场震耳欲聋的技术宣言。</p>
+                                 <div class="mt-6 text-center bg-[#F0EBE3] p-4 rounded-lg shadow-inner">
+                                    <div id="technique-counter" class="text-7xl font-bold text-[#A27B5C]">0</div>
+                                    <div class="text-lg text-[#6B4F4F] font-semibold mt-2">种釉彩工艺集于一身</div>
+                                 </div>
+                             </div>
+                              <div class="lg:col-span-3">
+                                 <img src="https://placehold.co/600x700/FFF8EA/594545?text=各种釉彩大瓶" alt="清乾隆各种釉彩大瓶" class="rounded-lg shadow-md w-full h-auto object-cover">
+                             </div>
+                         </div>
+                    </div>
+
+                    <div class="pt-8 border-t border-gray-200/80">
+                         <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">从艺术到机关：“转心瓶”的迷宫</h3>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <p class="text-gray-600 leading-relaxed mb-4">如果说“瓷母”是百科全书，那么“**转心瓶**”就是魔术道具。这些陶瓷工程学的奇迹，由一个镂空外瓶和一个可旋转内瓶组成。当转动瓶颈，内瓶上的画面便会透过外瓶的窗口依次显现，如同走马灯。</p>
+                                <p class="text-gray-600 leading-relaxed">在这里，艺术的重心已完全转移到机关的巧妙之上。它向观者提出的首要问题，不再是“它唤起了我怎样的感受？”，而是“**这到底是怎么做出来的？**”。这是对“新奇”的极致追求，其代价是牺牲了静观之美。</p>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <div class="revolving-vase-container relative w-64 h-80">
+                                    <div class="revolving-vase-inner absolute inset-0 bg-[#D8E3E7] rounded-lg flex items-center justify-center transition-all duration-500">
+                                        <div class="text-center text-[#325288]">
+                                            <p class="text-sm">内瓶</p>
+                                            <p class="font-bold text-xl">山水人物</p>
+                                            <p class="text-sm">(可旋转)</p>
+                                        </div>
+                                    </div>
+                                    <div class="revolving-vase-outer absolute inset-0 bg-[#FDFBF5] rounded-lg border-2 border-dashed border-[#A27B5C] p-4 flex items-center justify-center transition-all duration-500">
+                                        <div class="w-full h-full border-2 border-[#A27B5C] rounded-md text-center flex flex-col justify-between p-4">
+                                            <p class="text-[#A27B5C] font-bold">外瓶 (镂空)</p>
+                                            <p class="text-sm text-gray-500">(将鼠标悬停于此以查看内部)</p>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="summary" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">美的谱系：总览</h2>
+                <div class="overflow-x-auto bg-white/60 p-4 rounded-2xl shadow-lg border border-gray-200/50">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-[#F0EBE3]">
+                            <tr>
+                                <th class="p-3 font-bold uppercase text-gray-600 border-b border-gray-300">朝代</th>
+                                <th class="p-3 font-bold uppercase text-gray-600 border-b border-gray-300">代表器物</th>
+                                <th class="p-3 font-bold uppercase text-gray-600 border-b border-gray-300 hidden md:table-cell">核心工艺/材料</th>
+                                <th class="p-3 font-bold uppercase text-gray-600 border-b border-gray-300">审美哲学/风格</th>
+                                <th class="p-3 font-bold uppercase text-gray-600 border-b border-gray-300 hidden lg:table-cell">核心驱动力</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-semibold text-[#A27B5C]">唐</td>
+                                <td class="p-3">唐三彩</td>
+                                <td class="p-3 hidden md:table-cell">低温铅釉，多彩并施</td>
+                                <td class="p-3">雄浑奔放，富丽堂皇</td>
+                                <td class="p-3 hidden lg:table-cell">盛世国力，厚葬风俗</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-semibold text-[#4A6D7C]">宋</td>
+                                <td class="p-3">汝窑，哥窑</td>
+                                <td class="p-3 hidden md:table-cell">天青釉，开片，玛瑙入釉</td>
+                                <td class="p-3">素雅内省，道禅合一</td>
+                                <td class="p-3 hidden lg:table-cell">士大夫与帝王个人审美</td>
+                            </tr>
+                             <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-semibold text-[#325288]">元</td>
+                                <td class="p-3">青花</td>
+                                <td class="p-3 hidden md:table-cell">苏麻离青，釉下彩</td>
+                                <td class="p-3">雄浑大气，繁复叙事</td>
+                                <td class="p-3 hidden lg:table-cell">国际贸易，文化融合</td>
+                            </tr>
+                             <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-semibold text-[#C36A2D]">明</td>
+                                <td class="p-3">甜白，斗彩</td>
+                                <td class="p-3 hidden md:table-cell">甜白釉，麻仓土，斗彩工艺</td>
+                                <td class="p-3">雅致纯净，内敛和谐</td>
+                                <td class="p-3 hidden lg:table-cell">文化自信，宫廷品味</td>
+                            </tr>
+                             <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-semibold text-[#594545]">清·乾隆</td>
+                                <td class="p-3">瓷母，转心瓶</td>
+                                <td class="p-3 hidden md:table-cell">集各朝工艺，机械结构</td>
+                                <td class="p-3">繁缛华丽，炫技猎奇</td>
+                                <td class="p-3 hidden lg:table-cell">帝王个人意志，技术至上</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <footer class="text-center my-24">
+            <p class="max-w-4xl mx-auto text-lg text-gray-700/90 leading-relaxed">
+                最终，乾隆，这位伟大的、孤独的君主，成了这个陶瓷家族的最后一位大家长。在他对一种不可能的、无所不包的完美的追求中，中国陶瓷那条漫长、蜿蜒的河流，终于抵达了它的三角洲，分岔为成百上千条炫目、繁复、却浅显的溪流，然后，终于、也永远地，汇入了大海。关于“china”的故事，结束了。而这事儿，或许都怪乾隆。
+            </p>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                if (!item) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const commonChartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { family: "'Noto Serif SC', serif", size: 14 },
+                            color: '#433A3F'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: { title: tooltipTitleCallback },
+                        bodyFont: { family: "'Noto Serif SC', serif" },
+                        titleFont: { family: "'Noto Serif SC', serif" }
+                    }
+                }
+            };
+
+            const wrapLabel = (label, maxWidth = 16) => {
+                if (typeof label !== 'string' || label.length <= maxWidth) return label;
+                const words = label.split(/\s+/);
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxWidth) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) lines.push(currentLine.trim());
+                return lines.length > 0 ? lines : [label];
+            };
+
+            const mingDonutCtx = document.getElementById('mingDonutChart');
+            if (mingDonutCtx) {
+                new Chart(mingDonutCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['永乐甜白瓷', '其它瓷器'],
+                        datasets: [{
+                            label: '出土占比',
+                            data: [98, 2],
+                            backgroundColor: ['#FDFBF5', '#DCD7C9'],
+                            borderColor: ['#C36A2D', '#A27B5C'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        plugins: {
+                            ...commonChartOptions.plugins,
+                            title: {
+                                display: true,
+                                text: '永乐御窑厂出土瓷片占比 (高达98%)',
+                                font: { size: 16, family: "'Noto Serif SC', serif" },
+                                color: '#433A3F',
+                                padding: { top: 10, bottom: 20 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const aestheticRadarCtx = document.getElementById('aestheticRadarChart');
+            if (aestheticRadarCtx) {
+                new Chart(aestheticRadarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['素净', '雅致', '雄浑', '繁复', '技艺'],
+                        datasets: [{
+                            label: '宋',
+                            data: [9, 9, 3, 2, 6],
+                            backgroundColor: 'rgba(74, 109, 124, 0.2)',
+                            borderColor: 'rgba(74, 109, 124, 1)',
+                            pointBackgroundColor: 'rgba(74, 109, 124, 1)'
+                        }, {
+                            label: '明',
+                            data: [8, 8, 6, 6, 8],
+                            backgroundColor: 'rgba(195, 106, 45, 0.2)',
+                            borderColor: 'rgba(195, 106, 45, 1)',
+                            pointBackgroundColor: 'rgba(195, 106, 45, 1)'
+                        }, {
+                            label: '清·乾隆',
+                            data: [2, 3, 9, 10, 10],
+                            backgroundColor: 'rgba(89, 69, 69, 0.2)',
+                            borderColor: 'rgba(89, 69, 69, 1)',
+                            pointBackgroundColor: 'rgba(89, 69, 69, 1)'
+                        }]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        scales: {
+                            r: {
+                                angleLines: { color: 'rgba(67, 58, 63, 0.1)' },
+                                grid: { color: 'rgba(67, 58, 63, 0.1)' },
+                                pointLabels: {
+                                    font: { family: "'Noto Serif SC', serif", size: 14 },
+                                    color: '#433A3F'
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    color: '#6B4F4F'
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 10
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const counterElement = document.getElementById('technique-counter');
+            if (counterElement) {
+                let count = 0;
+                const target = 17;
+                const increment = () => {
+                    if (count < target) {
+                        count++;
+                        counterElement.innerText = count;
+                        setTimeout(increment, 100);
+                    } else {
+                        counterElement.innerText = target;
+                    }
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    if(entries[0].isIntersecting){
+                       increment();
+                       observer.disconnect();
+                    }
+                }, { threshold: 0.8 });
+                
+                observer.observe(counterElement);
+            }
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+            const observerOptions = { rootMargin: '-20% 0px -80% 0px' };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active-link');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active-link');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
