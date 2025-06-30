@@ -174,28 +174,58 @@
 
         .article-list {
             list-style: none;
-            max-height: 400px;
-            overflow-y: auto;
             padding-right: 5px;
         }
 
-        /* Custom scrollbar for webkit browsers */
-        .article-list::-webkit-scrollbar {
-            width: 6px;
+        /* Pagination styles */
+        .pagination-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
         }
 
-        .article-list::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 3px;
+        .pagination-info {
+            font-size: 0.75rem;
+            color: #86868b;
+            white-space: nowrap;
         }
 
-        .article-list::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
         }
 
-        .article-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.3);
+        .pagination-btn {
+            padding: 6px 12px;
+            background: rgba(247, 247, 247, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            color: #1d1d1f;
+            text-decoration: none;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover {
+            background: rgba(235, 235, 235, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn.active {
+            background: #007aff;
+            color: white;
+            border-color: #007aff;
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .article-item {
@@ -270,6 +300,26 @@
             .category h2 {
                 font-size: 1.1rem;
             }
+
+            .pagination-container {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .pagination-info {
+                text-align: center;
+            }
+
+            .pagination-controls {
+                gap: 3px;
+            }
+
+            .pagination-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+                min-width: 25px;
+            }
         }
 
         /* Loading Animation */
@@ -331,12 +381,32 @@
     </div>
 
     <script>
+        // Pagination configuration
+        const ITEMS_PER_PAGE = 20;
+        let categoriesData = {};
+        let currentPages = {}; // Track current page for each category
+
         // Load pages data and render articles
         async function loadPages() {
             try {
                 const response = await fetch('pages.json');
                 const data = await response.json();
-                renderCategories(data.categories);
+                
+                // Sort articles by date (newest first) for each category
+                Object.keys(data.categories).forEach(categoryKey => {
+                    data.categories[categoryKey].articles.sort((a, b) => {
+                        return new Date(b.date) - new Date(a.date);
+                    });
+                });
+                
+                categoriesData = data.categories;
+                
+                // Initialize current pages
+                Object.keys(categoriesData).forEach(categoryKey => {
+                    currentPages[categoryKey] = 1;
+                });
+                
+                renderCategories(categoriesData);
             } catch (error) {
                 console.error('Error loading pages:', error);
                 // Fallback content in case of error
@@ -354,14 +424,21 @@
             let delayIndex = 2; // Start from delay-2 since delay-1 is used for social section
 
             Object.entries(categories).forEach(([categoryKey, category]) => {
+                const currentPage = currentPages[categoryKey] || 1;
+                const totalArticles = category.articles.length;
+                const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE);
+                const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                const endIndex = startIndex + ITEMS_PER_PAGE;
+                const articlesForPage = category.articles.slice(startIndex, endIndex);
+
                 html += `
                     <div class="category ${categoryKey} fade-in delay-${delayIndex}">
                         <h2>
                             <div class="category-icon">${category.icon}</div>
                             ${category.name}
                         </h2>
-                        <ul class="article-list">
-                            ${category.articles.map(article => `
+                        <ul class="article-list" id="article-list-${categoryKey}">
+                            ${articlesForPage.map(article => `
                                 <li class="article-item">
                                     <a href="${article.url}" class="article-link">
                                         <div class="article-title">${article.title}</div>
@@ -370,6 +447,32 @@
                                 </li>
                             `).join('')}
                         </ul>
+                        ${totalPages > 1 ? `
+                            <div class="pagination-container">
+                                <div class="pagination-info">
+                                    第 ${currentPage} 页，共 ${totalPages} 页 (${totalArticles} 篇文章)
+                                </div>
+                                <div class="pagination-controls">
+                                    <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                                            onclick="changePage('${categoryKey}', ${currentPage - 1})" 
+                                            ${currentPage === 1 ? 'disabled' : ''}>
+                                        ‹
+                                    </button>
+                                    ${generatePageNumbers(categoryKey, currentPage, totalPages)}
+                                    <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                                            onclick="changePage('${categoryKey}', ${currentPage + 1})" 
+                                            ${currentPage === totalPages ? 'disabled' : ''}>
+                                        ›
+                                    </button>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="pagination-container">
+                                <div class="pagination-info">
+                                    共 ${totalArticles} 篇文章
+                                </div>
+                            </div>
+                        `}
                     </div>
                 `;
                 delayIndex++;
@@ -382,6 +485,93 @@
             
             // Re-apply fade-in animations to newly created elements
             applyFadeInAnimations();
+        }
+
+        function generatePageNumbers(categoryKey, currentPage, totalPages) {
+            let pageNumbers = '';
+            const maxVisiblePages = 5;
+            
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            // Adjust start page if we're near the end
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbers += `
+                    <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage('${categoryKey}', ${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            return pageNumbers;
+        }
+
+        function changePage(categoryKey, newPage) {
+            const category = categoriesData[categoryKey];
+            const totalPages = Math.ceil(category.articles.length / ITEMS_PER_PAGE);
+            
+            if (newPage < 1 || newPage > totalPages) {
+                return;
+            }
+            
+            currentPages[categoryKey] = newPage;
+            
+            // Re-render only the specific category
+            renderSingleCategory(categoryKey, category);
+        }
+
+        function renderSingleCategory(categoryKey, category) {
+            const categoryElement = document.querySelector(`.category.${categoryKey}`);
+            if (!categoryElement) return;
+            
+            const currentPage = currentPages[categoryKey];
+            const totalArticles = category.articles.length;
+            const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const articlesForPage = category.articles.slice(startIndex, endIndex);
+
+            // Update article list
+            const articleList = categoryElement.querySelector('.article-list');
+            articleList.innerHTML = articlesForPage.map(article => `
+                <li class="article-item">
+                    <a href="${article.url}" class="article-link">
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-date">${article.date}</div>
+                    </a>
+                </li>
+            `).join('');
+
+            // Update pagination
+            const paginationContainer = categoryElement.querySelector('.pagination-container');
+            if (totalPages > 1) {
+                paginationContainer.innerHTML = `
+                    <div class="pagination-info">
+                        第 ${currentPage} 页，共 ${totalPages} 页 (${totalArticles} 篇文章)
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                                onclick="changePage('${categoryKey}', ${currentPage - 1})" 
+                                ${currentPage === 1 ? 'disabled' : ''}>
+                            ‹
+                        </button>
+                        ${generatePageNumbers(categoryKey, currentPage, totalPages)}
+                        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                                onclick="changePage('${categoryKey}', ${currentPage + 1})" 
+                                ${currentPage === totalPages ? 'disabled' : ''}>
+                            ›
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Re-apply hover effects to newly created article links
+            applyArticleHoverEffects();
         }
 
         function applyArticleHoverEffects() {
