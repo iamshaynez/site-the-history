@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>官渡之战：交互式历史探索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Ancient Scroll -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertical scrolling narrative. It's structured into five distinct, thematic sections: 1) Introduction, 2) The Contenders (a deep-dive comparison of Cao Cao and Yuan Shao), 3) The Timeline (an interactive chronicle of the battle), 4) Turning Points (highlighting key strategic decisions), and 5) The Legacy. This structure was chosen to guide the user through a logical story arc—from understanding the characters to following the plot and finally appreciating the consequences. A sticky navigation bar allows users to jump between these "chapters," accommodating both linear readers and those who wish to explore specific topics. This design prioritizes narrative clarity and user-driven exploration over a rigid, report-like format. -->
+    <!-- Visualization & Content Choices: 
+        - **Leaders Comparison:** Report Info: Table 1 comparing leaders. Goal: Compare personalities and leadership styles. Viz: A side-by-side card layout with a radar chart (Chart.js) for a quick visual summary of their strengths/weaknesses. Interaction: Text details are always visible for clarity. Justification: A radar chart is more engaging than a static table for comparing multiple attributes simultaneously.
+        - **Force Strength:** Report Info: Troop numbers (Yuan >100k, Cao 20-40k). Goal: Show the initial imbalance of power. Viz: A horizontal bar chart (Chart.js). Justification: A bar chart is the clearest way to visualize a direct quantitative comparison.
+        - **Battle Timeline:** Report Info: Table 2 listing key events. Goal: Show the chronological flow of the battle. Viz/Method: An interactive vertical timeline built with HTML/CSS. Interaction: Clicking on an event point reveals a detailed description card. Justification: This transforms a passive list of dates into an engaging, explorable narrative path.
+        - **Key Turning Points:** Report Info: Text describing critical events (Xu You's defection, Wuchao raid). Goal: Emphasize decisive moments. Viz/Method: A grid of interactive cards using HTML/CSS. Interaction: Hovering over a card reveals its significance. Justification: This breaks down complex strategic analysis into digestible, focused insights.
+        - **Legacy Stats:** Report Info: Aftermath details. Goal: Summarize the long-term impact. Viz/Method: Styled stat cards (HTML/CSS). Justification: Provides quick, memorable takeaways of the battle's historical significance.
+        Library/Method: All charts are rendered on <canvas> using Chart.js. Diagrams and layouts use HTML and Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFBF5; /* A very light, warm cream */
+            color: #402E32; /* A dark, warm brown */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        .nav-active {
+            color: #C89B3C; /* Muted Gold */
+            transform: scale(1.1);
+        }
+        .nav-item {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-item:hover {
+            color: #C89B3C;
+        }
+        .card {
+            background-color: #F8F4E9;
+            border: 1px solid #EAE0C8;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-item-content {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            overflow: hidden;
+        }
+        .timeline-item-content.expanded {
+            max-height: 500px;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+         @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-opacity-80 backdrop-blur-md bg-[#FDFBF5] sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-[#402E32]">官渡之战</h1>
+            <ul class="hidden md:flex space-x-8 text-sm font-medium tracking-wider">
+                <li><a href="#intro" class="nav-item">序章</a></li>
+                <li><a href="#leaders" class="nav-item">双雄</a></li>
+                <li><a href="#timeline" class="nav-item">战局</a></li>
+                <li><a href="#turning-points" class="nav-item">决胜</a></li>
+                <li><a href="#legacy" class="nav-item">回响</a></li>
+            </ul>
+            <div class="md:hidden">
+                 <select onchange="window.location.href=this.value" class="bg-transparent font-semibold border-none focus:ring-0">
+                    <option value="#intro">序章</option>
+                    <option value="#leaders">双雄</option>
+                    <option value="#timeline">战局</option>
+                    <option value="#turning-points">决胜</option>
+                    <option value="#legacy">回响</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="container mx-auto px-6 py-16 md:py-24 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">官渡：两种命运的决战</h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                公元200年，中原腹地。一场战役，决定了北方的归属，奠定了三国鼎立的雏形。这不仅是十万大军的正面碰撞，更是两种性格、两种权谋、两种命运的终极对决。此战以少胜多的背后，究竟隐藏着怎样的战略博弈与人性较量？让我们一同拨开历史的迷雾，探索这场改变时代的战争。
+            </p>
+        </section>
+
+        <!-- Section 2: The Leaders -->
+        <section id="leaders" class="py-16 md:py-24 bg-[#F8F4E9]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">双雄对峙</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">官渡之战的结局，根植于两位统帅的性格与格局。一位是旧贵族的巅峰，一位是新秩序的开创者。他们的对决，是两种权力模式的碰撞。</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <!-- Cao Cao Card -->
+                    <div class="card p-8 rounded-lg">
+                        <h3 class="text-3xl font-bold mb-4 text-center">曹操</h3>
+                        <div class="text-center mb-6">
+                            <span class="text-sm bg-red-100 text-red-800 px-3 py-1 rounded-full">挑战者</span>
+                            <p class="mt-2 text-gray-500 italic">“治世之能臣，乱世之奸雄”</p>
+                        </div>
+                        <ul class="space-y-4 text-gray-700">
+                            <li><strong class="font-semibold text-[#402E32]">出身背景:</strong> 宦官之后，依赖个人才干与权谋崛起，打破门第之见。</li>
+                            <li><strong class="font-semibold text-[#402E32]">核心策略:</strong> “奉天子以令不臣”，占据道义制高点；推行“屯田制”，保障后勤；“唯才是举”，凝聚顶级人才。</li>
+                            <li><strong class="font-semibold text-[#402E32]">性格特点:</strong> 务实果决，善于纳谏，能在关键时刻敢于冒险，对人性有深刻洞察。</li>
+                        </ul>
+                    </div>
+                    <!-- Yuan Shao Card -->
+                    <div class="card p-8 rounded-lg">
+                        <h3 class="text-3xl font-bold mb-4 text-center">袁绍</h3>
+                        <div class="text-center mb-6">
+                           <span class="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">守成者</span>
+                           <p class="mt-2 text-gray-500 italic">“外宽内忌，好谋无决”</p>
+                        </div>
+                        <ul class="space-y-4 text-gray-700">
+                           <li><strong class="font-semibold text-[#402E32]">出身背景:</strong> “四世三公”顶级士族，门生故吏遍天下，拥有无与伦比的政治声望。</li>
+                           <li><strong class="font-semibold text-[#402E32]">核心策略:</strong> 依赖庞大的政治资本和家族影响力，坐拥河北四州，兵强马壮，实力冠绝群雄。</li>
+                           <li><strong class="font-semibold text-[#402E32]">性格特点:</strong> 优柔寡断，刚愎自用，听不进逆耳忠言，屡次在关键决策上错失良机。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-16">
+                     <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold">能力对比</h3>
+                        <p class="text-gray-600 mt-2">通过多维度分析，我们可以更直观地看到两位领导者在关键能力上的差异。</p>
+                    </div>
+                    <div class="chart-container bg-white/50 rounded-lg p-4">
+                        <canvas id="leadersChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- Section 3: Timeline -->
+        <section id="timeline" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">战局推演</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">官渡之战是一场持续数月的拉锯战，从前哨战的试探到中盘的相持，再到最终的奇袭决胜，每一步都惊心动魄。点击下方节点，展开详细战况。</p>
+                </div>
+
+                <div class="text-center mb-12">
+                     <h3 class="text-2xl font-bold">战前实力对比</h3>
+                    <div class="chart-container" style="height: 150px; max-height: 200px;">
+                        <canvas id="forceStrengthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="relative wrap overflow-hidden p-10 h-full">
+                    <div class="absolute h-full border border-dashed border-opacity-20 border-[#C89B3C]" style="left: 50%"></div>
+                    <div id="timeline-container" class="space-y-8">
+                        <!-- Timeline items will be injected here by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Turning Points -->
+        <section id="turning-points" class="py-16 md:py-24 bg-[#F8F4E9]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">决胜千里</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">一场大战的胜负，往往取决于几个关键的转折点。正是这些决策与变数，最终导向了袁绍的崩盘和曹操的胜利。</p>
+                </div>
+                <div id="turning-points-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Turning point cards will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Legacy -->
+        <section id="legacy" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">千年回响</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">官渡之战的硝烟早已散尽，但它对历史的走向和后世的启示，却影响至今。它不仅是一场战役，更是一个关于战略、领导力和人性的深刻范本。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="card p-8 rounded-lg">
+                        <h3 class="text-5xl font-bold text-[#C89B3C]">7年</h3>
+                        <p class="mt-4 font-semibold">统一北方</p>
+                        <p class="text-sm text-gray-600 mt-2">官渡战后，曹操历时七年，彻底平定北方，结束了黄河流域长达近二十年的混战局面。</p>
+                    </div>
+                    <div class="card p-8 rounded-lg">
+                        <h3 class="text-5xl font-bold text-[#C89B3C]">3分</h3>
+                        <p class="mt-4 font-semibold">三国雏形</p>
+                        <p class="text-sm text-gray-600 mt-2">此战奠定了曹魏政权的基础，形成了强大的北方核心，直接催生了日后三国鼎立的战略格局。</p>
+                    </div>
+                     <div class="card p-8 rounded-lg">
+                        <h3 class="text-5xl font-bold text-[#C89B3C]">1把火</h3>
+                        <p class="mt-4 font-semibold">人心的胜利</p>
+                        <p class="text-sm text-gray-600 mt-2">曹操火烧投敌信件，展现了惊人的政治胸襟，用宽容换来了统治集团的稳固与忠诚。</p>
+                    </div>
+                </div>
+                <div class="mt-16 text-center max-w-4xl mx-auto text-gray-700">
+                     <h3 class="text-2xl font-bold mb-6">永恒的启示</h3>
+                     <p class="text-lg leading-relaxed">官渡之战最终证明，决定一个组织命运的，不是其规模的大小，而是其领导者的品格与格局。袁绍的失败，是骄傲、猜忌和犹豫的失败；曹操的胜利，则是坚韧、务实和对人性深刻洞察的胜利。这场战争最深刻的警示在于：最大的敌人，往往不是外界的强敌，而是领导者内心的“袁绍”。真正的胜利，始于战胜自我。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#F8F4E9] py-8">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>交互式历史探索应用 | 根据《官渡：两种命运的决战，一个时代的诞生》报告生成</p>
+        </div>
+    </footer>
+
+    <script>
+        const appData = {
+            leaders: {
+                labels: ['战略远见', '战术执行', '人才管理', '资源实力', '决断力', '政治手腕'],
+                cao: [9, 8, 10, 6, 9, 10],
+                yuan: [5, 6, 4, 10, 3, 5]
+            },
+            forceStrength: {
+                labels: ['袁绍军', '曹操军'],
+                data: [110000, 30000] // Using an average estimate
+            },
+            timeline: [
+                {
+                    date: "公元200年 正月",
+                    title: "东击刘备",
+                    description: "袁绍集结大军之际，曹操力排众议，闪击徐州刘备，消除侧翼威胁。此举展现其超凡战略魄力，也暴露了袁绍的迟疑不决。",
+                    side: "left"
+                },
+                {
+                    date: "公元200年 四月",
+                    title: "白马解围",
+                    description: "曹操用荀攸之计，声东击西，奇袭白马。关羽于万军之中阵斩袁绍大将颜良，曹军初战告捷，士气大振。",
+                    side: "right"
+                },
+                {
+                    date: "公元200年 八月",
+                    title: "官渡对峙",
+                    description: "双方主力在官渡正面相遇，袁军连营数十里，筑土山、挖地道猛攻；曹军则深沟高垒，造霹雳车、掘长沟应对，战事陷入胶着。",
+                    side: "left"
+                },
+                {
+                    date: "公元200年 十月",
+                    title: "许攸夜奔",
+                    description: "袁绍谋士许攸因内部矛盾与家人被捕，愤而叛投曹操。曹操“跣足出迎”，获得了袁军粮仓在乌巢的关键情报。",
+                    side: "right"
+                },
+                {
+                    date: "公元200年 十月",
+                    title: "奇袭乌巢",
+                    description: "曹操亲率5000精兵，伪装奇袭，焚毁了袁军所有粮草。后勤命脉被断，袁军军心大乱，为总决战的胜利奠定了基础。",
+                    side: "left"
+                },
+                {
+                    date: "决战",
+                    title: "全线崩溃",
+                    description: "乌巢被焚，大将张郃、高览阵前倒戈。曹军趁势总攻，袁军土崩瓦解，七万余人被俘。袁绍仅率八百骑仓皇北逃。",
+                    side: "right"
+                }
+            ],
+            turningPoints: [
+                 {
+                    title: "田丰下狱",
+                    icon: "⛓️",
+                    description: "袁绍因“幼子生病”拒绝奇袭许都的良机，并将忠言逆耳的顶级谋士田丰下狱，自毁长城。"
+                },
+                {
+                    title: "奉天子",
+                    icon: "👑",
+                    description: "曹操迎汉献帝于许都，占据政治高地，使其所有军事行动都具备“匡扶汉室”的合法性。"
+                },
+                {
+                    title: "奇袭乌巢",
+                    icon: "🔥",
+                    description: "采纳许攸之计，果断出击，直捣黄龙，焚毁袁军命脉，是整场战役最关键的胜负手。"
+                },
+                {
+                    title: "火烧书信",
+                    icon: "✉️",
+                    description: "战后烧毁通敌信件，不予追究。此举收拢人心，将潜在的猜忌转化为感激与忠诚，稳定了内部。 "
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render Leader Comparison Chart
+            const leadersCtx = document.getElementById('leadersChart').getContext('2d');
+            new Chart(leadersCtx, {
+                type: 'radar',
+                data: {
+                    labels: appData.leaders.labels,
+                    datasets: [{
+                        label: '曹操',
+                        data: appData.leaders.cao,
+                        backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        pointBackgroundColor: 'rgba(220, 38, 38, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: '袁绍',
+                        data: appData.leaders.yuan,
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(64, 46, 50, 0.2)' },
+                            grid: { color: 'rgba(64, 46, 50, 0.2)' },
+                            pointLabels: { font: { size: 12 }, color: '#402E32' },
+                            ticks: {
+                                backdropColor: '#FDFBF5',
+                                color: '#402E32'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#402E32',
+                                font: { size: 14 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Render Force Strength Chart
+            const forceCtx = document.getElementById('forceStrengthChart').getContext('2d');
+            new Chart(forceCtx, {
+                type: 'bar',
+                data: {
+                    labels: appData.forceStrength.labels,
+                    datasets: [{
+                        label: '兵力 (估算)',
+                        data: appData.forceStrength.data,
+                        backgroundColor: ['rgba(37, 99, 235, 0.6)', 'rgba(220, 38, 38, 0.6)'],
+                        borderColor: ['rgba(37, 99, 235, 1)', 'rgba(220, 38, 38, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return value / 10000 + '万' },
+                                color: '#402E32'
+                            },
+                             grid: { display: false }
+                        },
+                        y: {
+                            ticks: { color: '#402E32', font: {size: 14} },
+                             grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Render Timeline
+            const timelineContainer = document.getElementById('timeline-container');
+            appData.timeline.forEach(item => {
+                const alignmentClass = item.side === 'left' ? 'mb-8 flex justify-between items-center w-full right-timeline' : 'mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline';
+                const html = `
+                    <div class="${alignmentClass}">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-[#C89B3C] shadow-xl w-12 h-12 rounded-full cursor-pointer timeline-node">
+                            <h1 class="mx-auto font-semibold text-sm text-white">${item.date.split(" ")[1]}</h1>
+                        </div>
+                        <div class="order-1 card rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <h3 class="mb-3 font-bold text-gray-800 text-xl">${item.title}</h3>
+                            <p class="timeline-item-content text-sm leading-snug tracking-wide text-gray-600">${item.description}</p>
+                        </div>
+                    </div>`;
+                timelineContainer.innerHTML += html;
+            });
+            
+            document.querySelectorAll('.timeline-node').forEach(node => {
+                node.addEventListener('click', () => {
+                    const content = node.nextElementSibling.querySelector('.timeline-item-content');
+                    content.classList.toggle('expanded');
+                });
+            });
+
+            // Render Turning Points
+            const turningPointsContainer = document.getElementById('turning-points-container');
+            appData.turningPoints.forEach(item => {
+                const html = `
+                    <div class="card p-6 rounded-lg text-center">
+                        <div class="text-5xl mb-4">${item.icon}</div>
+                        <h3 class="text-xl font-bold mb-2">${item.title}</h3>
+                        <p class="text-gray-600">${item.description}</p>
+                    </div>`;
+                turningPointsContainer.innerHTML += html;
+            });
+
+            // Navigation scroll highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-item');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('nav-active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('nav-active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
