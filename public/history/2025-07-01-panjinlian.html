@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>潘金莲悬案：一个交互式探索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral / 沙漠暖棕 -->
+    <!-- Application Structure Plan: 本应用采用非线性的主题分段结构，通过顶部导航栏引导用户探索四个核心主题：小说世界、历史镜鉴、民间传说、现代回响。这种结构打破了报告的线性阅读模式，允许用户根据兴趣自由跳转，通过互动（点击人物、查看图表、对比卡片、浏览时间线）来深入挖掘信息。如此设计旨在将用户从被动阅读者转变为主动探索者，通过多维度、多层次的互动，更直观、更深刻地理解潘金莲故事的复杂性，而非简单复述报告。 -->
+    <!-- Visualization & Content Choices: 
+        1.  人物关系图 (小说世界): 目标-组织与关系; 方式-HTML/CSS/JS互动节点图; 理由-直观展示小说中复杂的人物关系网，点击交互比纯文本更具探索性。
+        2.  女性权利对比图 (历史镜鉴): 目标-对比; 方式-Chart.js条形图; 理由-将报告中的表格数据可视化，清晰对比宋代与明清女性法律地位的差异，是核心论点的有力支撑。
+        3.  叙事对比卡片 (民间传说): 目标-对比; 方式-并排HTML卡片及互动揭示; 理由-直接并列呈现小说与传说的不同描述，让用户一目了然地看到差异，互动揭秘“真相核查”增加了参与感。
+        4.  形象演变时间线 (现代回响): 目标-展示变化; 方式-HTML/CSS/JS水平滚动时间线; 理由-时间线是展示历史演变的最佳形式，直观呈现潘金莲形象在不同时代的文化变迁。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #C89F9C;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #AF7D7A;
+        }
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 100%;
+        }
+        .content-section {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            border-bottom: 1px solid #EAE0D5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; 
+            max-height: 500px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+        .character-node {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .character-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-item {
+            flex: 0 0 80%;
+        }
+         @media (min-width: 768px) {
+            .timeline-item {
+                flex: 0 0 30%;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="navbar" class="bg-FDFBF8/80 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-center items-center h-20 space-x-6 md:space-x-12">
+                <a href="#intro" class="nav-link text-sm md:text-base font-medium">悬案开启</a>
+                <a href="#novel" class="nav-link text-sm md:text-base font-medium">小说世界</a>
+                <a href="#history" class="nav-link text-sm md:text-base font-medium">历史镜鉴</a>
+                <a href="#legend" class="nav-link text-sm md:text-base font-medium">民间传说</a>
+                <a href="#modern" class="nav-link text-sm md:text-base font-medium">现代回响</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="intro" class="min-h-screen flex items-center justify-center text-center bg-[#F8F3ED] content-section">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-bold text-[#AF7D7A] mb-4">潘金莲悬案</h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    一个融合了小说、历史、传说与现代想象的文化谜题。在这里，您将不只是阅读，而是通过互动探索，层层揭开这位中国文学史上最具争议女性的面纱。
+                </p>
+            </div>
+        </section>
+
+        <section id="novel" class="content-section bg-FDFBF8">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-[#AF7D7A]">小说世界：命运交织的人物</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
+                    在《水浒传》的舞台上，每个人物都是推动悲剧的齿轮。点击下方人物头像，查看他们在故事中的角色、动机与关键行为。这不仅是一个故事，更是一张复杂的人性关系网。
+                </p>
+                <div class="relative max-w-4xl mx-auto p-8" id="character-map-container">
+                    <!-- Character nodes will be dynamically inserted here -->
+                </div>
+                <div id="character-details" class="mt-8 max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg" style="display: none;">
+                    <!-- Character details will be shown here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="history" class="content-section bg-[#F8F3ED]">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-[#AF7D7A]">历史镜鉴：宋代女性的枷锁与可能</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
+                    潘金莲的故事发生在经济文化空前繁荣的宋代。法律曾给予女性一定的权利，但现实的鸿沟有多深？下图直观对比了宋代与后世明清时期女性的关键法律地位，揭示了潘金莲悲剧背后，理论权利与现实困境的巨大张力。
+                </p>
+                <div class="chart-container">
+                    <canvas id="rightsChart"></canvas>
+                </div>
+                 <p class="text-center text-gray-500 text-sm mt-4">图表：宋代与明清女性法律权利对比</p>
+            </div>
+        </section>
+
+        <section id="legend" class="content-section bg-FDFBF8">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-[#AF7D7A]">民间传说：历史的两种面孔</h2>
+                 <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
+                    小说之外，流传着一个截然不同的故事，试图为武大郎与潘金莲“翻案”。下方卡片并置了两种叙事中的人物形象。哪一个是历史，哪一个是愿望？点击“真相核查”按钮，探索这段现代传说的背后。
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div id="novel-portrayal">
+                        <h3 class="text-2xl font-bold text-center mb-6">小说中的形象</h3>
+                        <!-- Cards will be injected here -->
+                    </div>
+                    <div id="legend-portrayal">
+                         <h3 class="text-2xl font-bold text-center mb-6">传说中的形象</h3>
+                         <!-- Cards will be injected here -->
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <button id="fact-check-btn" class="bg-[#C89F9C] text-white font-bold py-3 px-8 rounded-full hover:bg-[#AF7D7A] transition-colors">
+                        真相核查
+                    </button>
+                </div>
+                <div id="fact-check-reveal" class="mt-8 max-w-3xl mx-auto bg-gray-100 p-6 rounded-lg" style="display: none;">
+                    <h4 class="font-bold text-lg mb-2 text-gray-800">传说真实性分析</h4>
+                    <p class="text-gray-700"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="modern" class="content-section bg-[#F8F3ED]">
+            <div class="container mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-[#AF7D7A]">现代回响：不断变迁的文化符号</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
+                    潘金莲的形象并非一成不变。从“淫妇”到“受害者”，再到反抗的象征，她的每一次银幕重生都折射出社会观念的演进。拖动下方时间线，看她如何在不同时代被重新解读。
+                </p>
+                <div class="flex overflow-x-auto space-x-4 md:space-x-8 pb-4 px-4">
+                    <!-- Timeline items will be injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#4A4A4A] text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold mb-4">一个拒绝终结的故事</h3>
+            <p class="max-w-3xl mx-auto text-gray-300">
+                潘金莲的悬案，至今未结。因为它所承载的关于人性、欲望、压迫与反抗的文化辩论，依然触动着我们。这个故事注定将继续在时间的河流中，被不断地讲述、争论与重构。
+            </p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const appData = {
+        characters: [
+            { id: 'pan', name: '潘金莲', role: '不甘的妻子', summary: '出身卑微的使女，因美貌被强制嫁给武大郎。内心充满不甘与欲望，在被武松拒绝后，与西门庆通奸，并最终毒杀亲夫。是悲剧的核心人物，既是受害者也是加害者。', position: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' },
+            { id: 'wuda', name: '武大郎', role: '老实的丈夫', summary: '身材矮小、面目丑陋的炊饼小贩。为人忠厚但懦弱，无力保护妻子，也无法满足其情感需求。捉奸时被西门庆踢伤，后被妻子毒杀，是悲剧的直接受害者。', position: 'top-1/2 left-8 -translate-y-1/2' },
+            { id: 'wusong', name: '武松', role: '复仇的英雄', summary: '武大郎的弟弟，打虎英雄，相貌堂堂。严词拒绝了潘金莲的引诱。在哥哥死后，识破奸情，因官府不作为而选择私刑复仇，手刃潘金莲与西门庆。代表了民间朴素的正义观。', position: 'top-8 left-1/2 -translate-x-1/2' },
+            { id: 'ximen', name: '西门庆', role: '贪婪的富商', summary: '阳谷县的富商恶霸，有钱有势。垂涎潘金莲美色，在王婆的帮助下与其通奸，并最终唆使潘金莲杀夫。体现了金钱与权力对道德的腐蚀。', position: 'top-1/2 right-8 -translate-y-1/2' },
+            { id: 'wang', name: '王婆', role: '贪婪的掮客', summary: '开茶坊的邻居，精于算计，洞悉人性。为贪图利益，一手策划并撮合了西门庆与潘金莲的奸情，并教唆杀人。是市井社会中道德沦丧的具象化身。', position: 'bottom-8 left-1/2 -translate-x-1/2' }
+        ],
+        rightsData: {
+            labels: ['嫁妆所有权', '寡妇再嫁', '离婚途径'],
+            datasets: [
+                {
+                    label: '宋代 (960-1279)',
+                    data: [8, 9, 7],
+                    backgroundColor: 'rgba(200, 159, 156, 0.7)',
+                    borderColor: 'rgba(200, 159, 156, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '明清两代 (1368-1912)',
+                    data: [4, 2, 3],
+                    backgroundColor: 'rgba(175, 125, 122, 0.5)',
+                    borderColor: 'rgba(175, 125, 122, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        legendData: {
+            novel: [
+                { name: '武大郎', desc: '“三寸丁谷树皮”，面目丑陋，懦弱无能的炊饼小贩。' },
+                { name: '潘金莲', desc: '“美貌如花”，但生性放荡、心狠手辣的毒妇。' }
+            ],
+            legend: [
+                { name: '武植', desc: '身高一米八以上，考中进士，为官清廉的县令。' },
+                { name: '潘氏', desc: '出身知州家庭的大家闺秀，贤良淑德，相夫教子。' }
+            ],
+            factCheck: '该传说存在致命的年代错误：《水浒传》成书于元末明初（14世纪），而传说中的武植是明朝永乐年间（15世纪）的官员，施耐庵不可能写一个尚未出生的人。所谓的“武植墓”和碑文均为现代好事者根据传说重修，并无考古学价值，正史和地方志中也均无此人记载。这是一个反映现代人渴望“平反”心理的“现代民间传说”，而非历史真相。'
+        },
+        modernTimeline: [
+            { year: '1964', title: '电影《潘金莲》', image: '妖冶恶女', desc: '早期改编，基本遵循原著，将潘金莲塑造为妖冶、狠毒的蛇蝎美人，是需要被谴责的道德反派。' },
+            { year: '1998', title: '电视剧《水浒传》', image: '悲情怨妇', desc: '央视版经典，形象开始复杂化，展现了她被压抑的苦闷与无奈，但其“淫妇”的本质定性未变。' },
+            { year: '2011', title: '新版《水浒传》', image: '追求爱情的悲剧女性', desc: '创作者有意识地“人性化”改编，将其动机从“淫荡”改为对“真爱”的追求，大大增加了角色的同情分。' },
+            { year: '2015', title: '音乐剧《紫石街》', image: '渴望被理解的个体', desc: '打出“还原一个有体温的潘金莲”旗号，试图给她自我辩解的机会，突出其内心的挣扎与痛苦。' },
+            { year: '2016', title: '电影《我不是潘金莲》', image: '反抗污名的文化符号', desc: '片名借用其符号意义，指代被污名化、挣扎着证明自身清白的女性，标志着其形象的符号化与升华。' },
+        ]
+    };
+
+    function setupNavbar() {
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+
+        sections.forEach(section => observer.observe(section));
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    }
+
+    function setupCharacterMap() {
+        const container = document.getElementById('character-map-container');
+        const detailsPanel = document.getElementById('character-details');
+        
+        appData.characters.forEach(char => {
+            const node = document.createElement('div');
+            node.className = `character-node absolute w-24 h-24 md:w-32 md:h-32 bg-white rounded-full flex flex-col items-center justify-center shadow-md p-2 text-center ${char.position}`;
+            node.innerHTML = `<h4 class="font-bold text-sm md:text-lg text-[#AF7D7A]">${char.name}</h4><p class="text-xs md:text-sm text-gray-500">${char.role}</p>`;
+            node.dataset.id = char.id;
+            container.appendChild(node);
+
+            node.addEventListener('click', () => {
+                const charData = appData.characters.find(c => c.id === node.dataset.id);
+                if (charData) {
+                    detailsPanel.innerHTML = `
+                        <h3 class="font-bold text-xl mb-2 text-[#AF7D7A]">${charData.name} - ${charData.role}</h3>
+                        <p class="text-gray-700">${charData.summary}</p>
+                    `;
+                    detailsPanel.style.display = 'block';
+                }
+            });
+        });
+    }
+
+    function setupRightsChart() {
+        const ctx = document.getElementById('rightsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: appData.rightsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                     const texts = [
+                                        ['嫁妆归妻子个人，可带走改嫁', '嫁妆被视为夫家财产'],
+                                        ['社会普遍接纳，不被羞辱', '守节被颂扬，改嫁被视为失节'],
+                                        ['允许协议离婚、丈夫遗弃可改嫁', '严格限制，强调“七出”休妻权']
+                                    ];
+                                    label += texts[context.dataIndex][context.datasetIndex];
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false,
+                    },
+                    x: {
+                        ticks: {
+                           font: {
+                               size: 14,
+                               family: "'Noto Sans SC', sans-serif"
+                           }
+                        }
+                    }
+                },
+                indexAxis: 'y',
+            }
+        });
+    }
+
+    function setupLegendComparison() {
+        const novelContainer = document.getElementById('novel-portrayal');
+        const legendContainer = document.getElementById('legend-portrayal');
+        
+        appData.legendData.novel.forEach(p => {
+            novelContainer.innerHTML += `
+                <div class="bg-white rounded-lg shadow p-6 mb-4">
+                    <h4 class="font-bold text-xl text-[#AF7D7A]">${p.name}</h4>
+                    <p class="text-gray-600 mt-2">${p.desc}</p>
+                </div>`;
+        });
+        
+        appData.legendData.legend.forEach(p => {
+            legendContainer.innerHTML += `
+                <div class="bg-white rounded-lg shadow p-6 mb-4">
+                    <h4 class="font-bold text-xl text-[#AF7D7A]">${p.name}</h4>
+                    <p class="text-gray-600 mt-2">${p.desc}</p>
+                </div>`;
+        });
+
+        const factCheckBtn = document.getElementById('fact-check-btn');
+        const factCheckReveal = document.getElementById('fact-check-reveal');
+        factCheckReveal.querySelector('p').textContent = appData.legendData.factCheck;
+
+        factCheckBtn.addEventListener('click', () => {
+            if (factCheckReveal.style.display === 'none') {
+                factCheckReveal.style.display = 'block';
+                factCheckBtn.textContent = '收起核查';
+            } else {
+                factCheckReveal.style.display = 'none';
+                factCheckBtn.textContent = '真相核查';
+            }
+        });
+    }
+
+    function setupModernTimeline() {
+        const container = document.querySelector('#modern .overflow-x-auto');
+        appData.modernTimeline.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'timeline-item bg-white rounded-lg shadow-lg p-6';
+            div.innerHTML = `
+                <p class="font-bold text-gray-500">${item.year}</p>
+                <h4 class="text-xl font-bold mt-2 mb-2 text-[#AF7D7A]">${item.title}</h4>
+                <p class="text-sm font-semibold text-gray-700 mb-3">形象定位：${item.image}</p>
+                <p class="text-sm text-gray-600">${item.desc}</p>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    setupNavbar();
+    setupCharacterMap();
+    setupRightsChart();
+    setupLegendComparison();
+    setupModernTimeline();
+});
+</script>
+
+</body>
+</html>

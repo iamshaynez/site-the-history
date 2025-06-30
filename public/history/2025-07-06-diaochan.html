@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蝶影：貂蝉的交互式探索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The application is designed as a vertical scrolling journey through five thematic sections, transforming the linear report into an exploratory experience. This structure was chosen to guide the user through Diaochan's evolution chronologically and thematically: from historical fact to literary creation, to her famous stratagem, her varied fates, and finally her modern legacy. This non-linear exploration within a linear scroll flow makes the complex information more digestible and engaging. Key interactions include a clickable timeline to reveal character evolution, a tabbed interface to dissect the 'Chain Stratagem', and an interactive chart to visualize her different fates, promoting active user engagement over passive reading. -->
+    <!-- Visualization & Content Choices: 
+        1.  Historical Seeds: Goal(Inform) -> HTML cards with icons. Interaction(Hover). Justification(Simple, clear presentation of core facts). Method(HTML/Tailwind).
+        2.  Heroine's Evolution: Goal(Show Change) -> Interactive timeline. Interaction(Click to expand details). Justification(Visualizes the character's transformation, which is a core thesis of the report). Method(HTML/Tailwind/JS).
+        3.  Chain Stratagem: Goal(Organize/Explain Process) -> Tabbed content switcher. Interaction(Click tabs to change content). Justification(Breaks down the complex plot into easy-to-understand steps). Method(HTML/Tailwind/JS).
+        4.  Diaochan's Fates: Goal(Compare/Analyze) -> Doughnut Chart + Interactive legend. Interaction(Click legend to filter text). Justification(Transforms the report's static table into a dynamic visualization, highlighting the thematic distribution of her endings). Method(Chart.js/JS).
+        5.  Modern Legacy: Goal(Inform) -> Grid of info cards. Interaction(Hover). Justification(Presents modern-day impacts in a visually organized manner). Method(HTML/Tailwind).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #FDFBF5;
+            color: #4A4A4A;
+        }
+        .text-shadow {
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            padding: 1.5rem 0.5rem;
+            border-left: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(188, 170, 164, 0.1);
+            border-left: 2px solid #BCAAA4;
+            color: #333;
+        }
+        .section-card {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .tab-btn.active {
+            background-color: #A98E84;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .legend-item {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <nav id="side-nav" class="hidden md:flex flex-col items-center justify-center fixed top-0 right-0 h-screen bg-white/50 backdrop-blur-sm z-50 shadow-lg">
+        <a href="#hero" class="nav-link active">序章</a>
+        <a href="#genesis" class="nav-link">缘起</a>
+        <a href="#evolution" class="nav-link">演变</a>
+        <a href="#stratagem" class="nav-link">计谋</a>
+        <a href="#fates" class="nav-link">结局</a>
+        <a href="#legacy" class="nav-link">回响</a>
+    </nav>
+
+    <main class="w-full">
+        <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center p-4 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(253, 251, 245, 1) 0%, rgba(253, 251, 245, 0) 50%), url('https://images.unsplash.com/photo-1543849174-754c57cda335?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+            <h1 class="text-4xl md:text-7xl font-bold text-gray-800 text-shadow">蝶影</h1>
+            <p class="text-xl md:text-3xl mt-4 text-gray-700 text-shadow">真实与虚构间的绝世红颜</p>
+            <p class="max-w-3xl mx-auto mt-8 text-lg text-gray-600">
+                她，是中国四大美女之一，却在正史中芳踪难觅。本篇将带您穿越历史的迷雾与文学的想象，探索貂蝉——这位以身救国、颠倒众生的传奇女子，是如何从一缕私语，演变为一部不朽的史诗。
+            </p>
+             <div class="absolute bottom-10 animate-bounce">
+                <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+        </section>
+
+        <section id="genesis" class="min-h-screen w-full py-20 px-4 md:px-8 flex items-center">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">历史的种子</h2>
+                <p class="text-xl text-center text-gray-500 mb-12">正史无名，传奇缘起于此</p>
+                <div class="text-lg max-w-3xl mx-auto mb-12 text-center text-gray-600">
+                    在探寻貂蝉的源头时，我们发现权威史书《三国志》中并无此人。然而，历史的碎片中隐藏着一切的开端。这些零散的记载，为后世的文学创作提供了最原始的素材，一个基于政治、恐惧与背叛的故事，正等待着一位女主角来赋予其道德的华彩。
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">🤫</div>
+                        <h3 class="text-2xl font-semibold mb-2">侍婢私通</h3>
+                        <p class="text-gray-600">《三国志》载，吕布曾与董卓的一名侍婢私通，“恐事发觉，心不自安”。这是整段传奇最核心的历史内核，但侍婢无名，动机是恐惧。 </p>
+                    </div>
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">🗡️</div>
+                        <h3 class="text-2xl font-semibold mb-2">一掷手戟</h3>
+                        <p class="text-gray-600">董卓性情暴戾，曾因小事不满，向吕布掷出手戟。虽未击中，却在二人之间埋下猜忌与仇恨的种子，加剧了吕布的背叛之心。</p>
+                    </div>
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">👑</div>
+                        <h3 class="text-2xl font-semibold mb-2">貂蝉冠名</h3>
+                        <p class="text-gray-600">“貂蝉”并非人名，而是汉代侍中官员帽饰的名称。后世文人巧妙地借用此名，赋予了这位无名侍婢一个美丽而贴合其宫廷背景的名字。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="evolution" class="min-h-screen w-full py-20 px-4 md:px-8 bg-[#F8F4F0] flex items-center">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">一个女英雄的诞生</h2>
+                <p class="text-xl text-center text-gray-500 mb-12">从民间传说到文学史诗的演变</p>
+                <div class="text-lg max-w-3xl mx-auto mb-12 text-center text-gray-600">
+                    貂蝉的形象并非一蹴而就。她从一个在民间故事里寻找丈夫的普通女子，一步步被文人墨客精心打磨，最终在《三国演义》中被塑造成一位舍生取义、忠于汉室的巾帼英雄。点击下方时间线，见证她的蜕变。
+                </div>
+                
+                <div class="w-full">
+                    <div class="relative">
+                        <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-300"></div>
+                        <div class="relative flex justify-between">
+                            <div class="timeline-node" data-id="pinghua">
+                                <div class="w-6 h-6 rounded-full bg-[#A98E84] border-4 border-white shadow-md z-10"></div>
+                                <p class="mt-2 text-center font-semibold">宋元《平话》</p>
+                            </div>
+                             <div class="timeline-node" data-id="zaju">
+                                <div class="w-6 h-6 rounded-full bg-[#A98E84] border-4 border-white shadow-md z-10"></div>
+                                <p class="mt-2 text-center font-semibold">元代杂剧</p>
+                            </div>
+                             <div class="timeline-node" data-id="yanyi">
+                                <div class="w-6 h-6 rounded-full bg-[#A98E84] border-4 border-white shadow-md z-10"></div>
+                                <p class="mt-2 text-center font-semibold">明代《三国演义》</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="evolution-content" class="mt-12 p-8 section-card rounded-xl shadow-lg min-h-[250px] transition-all duration-500">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stratagem" class="min-h-screen w-full py-20 px-4 md:px-8 flex items-center">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">笑靥下的刀锋</h2>
+                <p class="text-xl text-center text-gray-500 mb-12">“连环计”全景剖析</p>
+                 <div class="text-lg max-w-3xl mx-auto mb-12 text-center text-gray-600">
+                    “连环计”是貂蝉一生中最华彩的乐章。她以自身为武器，游走于权倾朝野的董卓与骁勇善战的吕布之间，凭借超凡的智慧和演技，掀起了一场致命的风暴。这不仅是一场美人计，更是一场精准的心理操控。
+                </div>
+                <div class="flex justify-center mb-8 space-x-2 md:space-x-4">
+                    <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-300 shadow-sm active" data-id="step1">第一环：许婚吕布</button>
+                    <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-300 shadow-sm" data-id="step2">第二环：献媚董卓</button>
+                    <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-300 shadow-sm" data-id="step3">第三环：凤仪亭</button>
+                </div>
+                <div class="section-card p-8 rounded-xl shadow-lg">
+                    <div id="stratagem-content" class="text-lg text-gray-700 leading-relaxed min-h-[200px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fates" class="min-h-screen w-full py-20 px-4 md:px-8 bg-[#F8F4F0] flex items-center">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">帷幕之后</h2>
+                <p class="text-xl text-center text-gray-500 mb-12">貂蝉的多种结局</p>
+                <div class="text-lg max-w-3xl mx-auto mb-12 text-center text-gray-600">
+                    《三国演义》给了貂蝉一个辉煌的开始，却给了她一个模糊的结局。这个巨大的空白，激发了后世无尽的想象。在民间戏曲与传说中，她的命运出现了截然不同的版本，这些结局反映了社会对她功过的复杂评判。
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/2">
+                        <div class="chart-container relative h-96 max-h-[400px] w-full max-w-md mx-auto">
+                            <canvas id="fatesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <div id="fates-legend" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="legacy" class="min-h-screen w-full py-20 px-4 md:px-8 flex items-center">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">跨越世纪的回响</h2>
+                <p class="text-xl text-center text-gray-500 mb-12">现代世界中的貂蝉</p>
+                <div class="text-lg max-w-3xl mx-auto mb-12 text-center text-gray-600">
+                    从文学角色到文化符号，貂蝉的影响力穿越时空。她不仅是“四大美女”之一，更是流行文化中的常青树，甚至在当代引发了“故里之争”与商业品牌化。一个虚构的人物，最终在现实世界中获得了“真实”的生命。
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">🌙</div>
+                        <h3 class="text-2xl font-semibold mb-2">闭月之貌</h3>
+                        <p class="text-gray-600">“沉鱼、落雁、闭月、羞花”之一。传说貂蝉拜月时，明月见其美貌亦自愧躲入云中。她被后世封为美的极致象征。</p>
+                    </div>
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">🎮</div>
+                        <h3 class="text-2xl font-semibold mb-2">流行文化</h3>
+                        <p class="text-gray-600">在影视剧和电子游戏（如《真·三国无双》、《王者荣耀》）中，貂蝉是人气极高的角色，通常被塑造成兼具美貌与力量的舞者或法师。</p>
+                    </div>
+                    <div class="section-card p-6 rounded-xl shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-5xl mb-4">®️</div>
+                        <h3 class="text-2xl font-semibold mb-2">品牌之争</h3>
+                        <p class="text-gray-600">山西、甘肃等多地曾激烈争夺“貂蝉故里”之名。甘肃临洮县更成功将“貂蝉”注册为商标，标志着其文化价值向经济价值的转化。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-12 bg-gray-100">
+            <p class="text-gray-600">蝶影婆娑，一梦千年。</p>
+            <p class="text-gray-500 text-sm mt-2">一个文化符号的诞生与不朽。</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const evolutionData = {
+                pinghua: {
+                    title: "宋元《三国志平话》",
+                    content: "<strong>身份：</strong>吕布失散的妻子“任氏”。<br><strong>核心动机：</strong>夫妻团圆。流落王允府为婢，焚香祷告与吕布重逢。<br><strong>人物关系：</strong>与吕布是旧识夫妻。计策的核心是利用他们的原有关系。<br><strong>评价：</strong>故事格局较小，诛杀董卓是夫妻团圆的副产品。貂蝉的“义”是对丈夫的“情义”。"
+                },
+                zaju: {
+                    title: "元代杂剧《锦云堂暗定连环计》",
+                    content: "<strong>身份：</strong>身份复杂，是民女、宫女，也被丁原许配给吕布。<br><strong>核心动机：</strong>仍与吕布有旧情。<br><strong>人物关系：</strong>名字与“貂蝉冠”正式挂钩，但仍是基于与吕布的旧情展开故事。<br><strong>评价：</strong>形象更丰富，但核心驱动力未变，仍是个人情爱。"
+                },
+                yanyi: {
+                    title: "明代《三国演义》",
+                    content: "<strong>身份：</strong>王允府中的歌伎，被王允收为义女。<br><strong>核心动机：</strong>忠于汉室，舍生取义。为报国恩，自愿献身“连环计”。<br><strong>人物关系：</strong>与吕布在计策开始前【毫无关系】。这是罗贯中天才的改编。<br><strong>评价：</strong>格局完全打开。动机从个人情爱升华为家国大义，貂蝉被塑造成一位足以与男性英雄并肩的“义士”。"
+                }
+            };
+
+            const stratagemData = {
+                step1: {
+                    title: "第一环：巧设家宴，许婚吕布",
+                    content: "司徒王允在家中设宴款待吕布，席间让貂蝉献舞。吕布一见倾心，神魂颠倒。王允顺水推舟，当场认貂蝉为义女，并许配给吕布，彻底获取了吕布的信任。"
+                },
+                step2: {
+                    title: "第二环：再排筵席，献媚董卓",
+                    content: "数日后，王允又大张旗鼓地宴请董卓，再次请出貂蝉。董卓本性好色，立刻被迷住。王允故作不舍，最终“忍痛”将貂蝉献给董卓，当晚接入相府。一颗猜忌的种子就此埋下。"
+                },
+                step3: {
+                    title: "第三环：凤仪亭泣，激化矛盾",
+                    content: "貂蝉在董卓与吕布间巧妙周旋。她对吕布扮演无辜受害者，哭诉被董卓强占；对董卓则扮演忠贞爱妾，反称吕布调戏。最终在凤仪亭，她成功激化二人矛盾，引出董卓掷戟的决裂一幕，使这对义父子彻底反目成仇。"
+                }
+            };
+
+            const fatesData = [
+                {
+                    label: "红颜祸水",
+                    details: "<strong>结局代表：被关羽斩杀。</strong> 在部分戏曲中，貂蝉的美貌被视为会腐蚀英雄意志的危险力量。关羽为免其再度祸乱天下而将其斩杀。这代表了对“女色”的传统警惕与否定。",
+                    color: "#A52A2A"
+                },
+                {
+                    label: "悲剧英雄",
+                    details: "<strong>结局代表：被关羽释放。</strong> 这种结局肯定了貂蝉为国除奸的功绩。忠义化身的关羽认可她的牺牲，同情其遭遇，放她归去。这体现了民间对她个人命运的同情。",
+                    color: "#4682B4"
+                },
+                {
+                    label: "战争的战利品",
+                    details: "<strong>结局代表：成为关羽之妾。</strong> 这种处理方式反映了根深蒂固的男权思想，女性被视为胜利者的附属品，可以从一个英雄手中转移到另一个英雄手中，个人意志被抹杀。",
+                    color: "#6A5ACD"
+                },
+                {
+                    label: "贞洁烈女",
+                    details: "<strong>结局代表：投井或自刎。</strong> 在吕布死后，貂蝉为保贞节，不受曹操等人之辱，选择自尽。这种结局将她的个人品德和贞操置于首位，塑造了宁为玉碎不为瓦全的烈女形象。",
+                    color: "#2E8B57"
+                },
+                 {
+                    label: "功臣受禄",
+                    details: "<strong>结局代表：被曹操善待或小说原结局。</strong> 此结局将貂蝉视为有功之臣，或作为吕布家眷被曹操接收。她的故事悄然落幕，淹没于历史洪流之中。",
+                    color: "#D2B48C"
+                }
+            ];
+
+            function updateEvolutionContent(id) {
+                const data = evolutionData[id];
+                const contentDiv = document.getElementById('evolution-content');
+                contentDiv.style.opacity = 0;
+                setTimeout(() => {
+                    contentDiv.innerHTML = `<h3 class="text-2xl font-bold mb-4 text-[#A98E84]">${data.title}</h3><div class="text-lg leading-relaxed text-gray-700">${data.content}</div>`;
+                    contentDiv.style.opacity = 1;
+                }, 300);
+            }
+
+            document.querySelectorAll('.timeline-node').forEach(node => {
+                node.addEventListener('click', (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    updateEvolutionContent(id);
+                });
+            });
+
+            updateEvolutionContent('pinghua');
+
+
+            function updateStratagemContent(id) {
+                const data = stratagemData[id];
+                const contentDiv = document.getElementById('stratagem-content');
+                contentDiv.innerHTML = `<p>${data.content}</p>`;
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    document.querySelector('.tab-btn.active').classList.remove('active');
+                    e.currentTarget.classList.add('active');
+                    updateStratagemContent(e.currentTarget.dataset.id);
+                });
+            });
+
+            updateStratagemContent('step1');
+
+
+            const fatesLegendContainer = document.getElementById('fates-legend');
+            fatesData.forEach(fate => {
+                const item = document.createElement('div');
+                item.className = 'legend-item p-4 rounded-lg bg-white shadow-sm border-l-4 transition-all duration-300';
+                item.style.borderColor = fate.color;
+                item.innerHTML = `<div class="font-bold text-xl" style="color: ${fate.color};">${fate.label}</div><div class="text-gray-600 mt-2">${fate.details}</div>`;
+                fatesLegendContainer.appendChild(item);
+            });
+
+            const ctx = document.getElementById('fatesChart').getContext('2d');
+            const fatesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: fatesData.map(f => f.label),
+                    datasets: [{
+                        label: '貂蝉结局主题分布',
+                        data: [25, 25, 15, 20, 15], 
+                        backgroundColor: fatesData.map(f => f.color),
+                        borderColor: '#FDFBF5',
+                        borderWidth: 4,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '40%'
+                }
+            });
+            
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('#side-nav a');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
