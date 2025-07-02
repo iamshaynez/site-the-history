@@ -11,6 +11,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 from bs4 import BeautifulSoup
+from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.dom import minidom
 
 def extract_title_from_html(file_path):
     """从HTML文件中提取标题"""
@@ -155,13 +157,136 @@ def generate_pages_json():
         print(f"❌ 生成文件时出错: {e}")
         return False
 
+def generate_sitemap_xml(pages_data, base_url="https://your-domain.com"):
+    """生成 sitemap.xml 文件"""
+    print("开始生成 sitemap.xml...")
+    
+    # 创建根元素
+    urlset = Element('urlset')
+    urlset.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+    
+    # 添加首页
+    url_elem = SubElement(urlset, 'url')
+    SubElement(url_elem, 'loc').text = base_url
+    SubElement(url_elem, 'lastmod').text = datetime.now().strftime('%Y-%m-%d')
+    SubElement(url_elem, 'changefreq').text = 'daily'
+    SubElement(url_elem, 'priority').text = '1.0'
+    
+    # 为每个文章添加 URL
+    for category_name, category_data in pages_data['categories'].items():
+        for article in category_data['articles']:
+            url_elem = SubElement(urlset, 'url')
+            
+            # 构建完整 URL
+            full_url = f"{base_url.rstrip('/')}/{article['url']}"
+            SubElement(url_elem, 'loc').text = full_url
+            
+            # 使用文章日期作为最后修改时间
+            SubElement(url_elem, 'lastmod').text = article['date']
+            
+            # 设置更新频率和优先级
+            SubElement(url_elem, 'changefreq').text = 'weekly'
+            SubElement(url_elem, 'priority').text = '0.8'
+    
+    # 生成格式化的 XML
+    rough_string = tostring(urlset, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    pretty_xml = reparsed.toprettyxml(indent="  ", encoding='utf-8').decode('utf-8')
+    
+    # 移除空行
+    pretty_xml = '\n'.join([line for line in pretty_xml.split('\n') if line.strip()])
+    
+    # 保存文件
+    output_file = Path('public/sitemap.xml')
+    
+    try:
+        with open(output_file, 'w', encoding='utf-8') as file:
+            file.write(pretty_xml)
+        
+        print(f"✅ 成功生成 {output_file}")
+        
+        # 统计信息
+        total_urls = 1 + sum(len(cat['articles']) for cat in pages_data['categories'].values())
+        print(f"📊 Sitemap 统计:")
+        print(f"   - 总 URL 数量: {total_urls}")
+        print(f"   - 首页: 1 个")
+        
+        for category_name, category_data in pages_data['categories'].items():
+            print(f"   - {category_data['name']}: {len(category_data['articles'])} 个页面")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ 生成 sitemap.xml 时出错: {e}")
+        return False
+
+def generate_robots_txt(base_url="https://your-domain.com"):
+    """生成 robots.txt 文件"""
+    print("开始生成 robots.txt...")
+    
+    robots_content = f"""User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: {base_url.rstrip('/')}/sitemap.xml
+
+# 禁止访问的目录
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+"""
+    
+    output_file = Path('public/robots.txt')
+    
+    try:
+        with open(output_file, 'w', encoding='utf-8') as file:
+            file.write(robots_content)
+        
+        print(f"✅ 成功生成 {output_file}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ 生成 robots.txt 时出错: {e}")
+        return False
+
 if __name__ == '__main__':
-    print("🚀 自动生成 pages.json 文件")
-    print("=" * 50)
+    print("🚀 自动生成 pages.json 和 sitemap.xml 文件")
+    print("=" * 60)
     
-    success = generate_pages_json()
+    # 生成 pages.json
+    success_pages = generate_pages_json()
     
-    if success:
-        print("\n🎉 任务完成！")
+    if success_pages:
+        # 重新读取生成的 pages.json 数据
+        try:
+            with open('public/pages.json', 'r', encoding='utf-8') as file:
+                pages_data = json.load(file)
+            
+            print("\n" + "=" * 60)
+            
+            # 生成 sitemap.xml
+            base_url = input("请输入网站的基础 URL (例如: https://your-domain.com): ").strip()
+            if not base_url:
+                base_url = "https://learn.xiaowenz.com"
+                print(f"使用默认 URL: {base_url}")
+            
+            success_sitemap = generate_sitemap_xml(pages_data, base_url)
+            
+            # 生成 robots.txt
+            success_robots = generate_robots_txt(base_url)
+            
+            print("\n" + "=" * 60)
+            print("📋 完成总结:")
+            print(f"   ✅ pages.json: {'成功' if success_pages else '失败'}")
+            print(f"   ✅ sitemap.xml: {'成功' if success_sitemap else '失败'}")
+            print(f"   ✅ robots.txt: {'成功' if success_robots else '失败'}")
+            
+            if success_pages and success_sitemap and success_robots:
+                print("\n🎉 所有任务完成！")
+            else:
+                print("\n⚠️  部分任务失败，请检查错误信息！")
+                
+        except Exception as e:
+            print(f"\n❌ 读取 pages.json 文件时出错: {e}")
     else:
-        print("\n❌ 任务失败！")
+        print("\n❌ pages.json 生成失败，跳过 sitemap.xml 生成！")
